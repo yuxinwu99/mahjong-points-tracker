@@ -54,35 +54,37 @@ class Game:
     def handle_round_end(self, winner_index: int, multiplier: int, field_points: List[int]):
         """
         winner_index: 0-3
-        multiplier: Win strength (Ping Hu=1, Zi Mo=2, You Jin=5, etc.)
+        multiplier: Win strength (provided by user)
         field_points: Points from Gold/Flowers/Kongs for each player
         """
         temp_changes = [0, 0, 0, 0]
         self.cur_round.set_winner(winner_index, multiplier)
+        winner_fp = field_points[winner_index]
 
-        # 1. Calculate Base Payout (Dealer vs Non-Dealer)
-        # current_base starts at self.base_score and doubles for Lian Zhuang
-        current_base = self.base_score * (2 ** self.consecutive_win_count)
-        
-        # Winner's gain from each other player
+        # 1. Winner collects from everyone
+        # Formula: (Base * Multiplier * DealerMult) + Winner_Field
         for i in range(4):
             if i == winner_index:
                 continue
             
-            payout = current_base * multiplier
-            # If winner is dealer OR payer is dealer, double the payout
+            # Base part
+            base_payout = self.base_score * multiplier
+            # Apply 2x if winner OR payer is dealer
             if winner_index == self.dealer_index or i == self.dealer_index:
-                payout *= 2
+                base_payout *= 2
             
-            temp_changes[winner_index] += payout
-            temp_changes[i] -= payout
+            # Total payout to winner (includes their full field points)
+            total_to_winner = base_payout + winner_fp
+            
+            temp_changes[winner_index] += total_to_winner
+            temp_changes[i] -= total_to_winner
 
-        # 2. Calculate "Water" Transfers (comparing field points between all pairs)
-        fp = list(field_points)
-        for i in range(4):
-            for j in range(i + 1, 4):
-                diff = fp[i] - fp[j]
-                # If i has more points, j pays i the difference
+        # 2. Loser "Water" Transfers (Field differences among losers only)
+        losers = [idx for idx in range(4) if idx != winner_index]
+        for idx, i in enumerate(losers):
+            for j in losers[idx + 1:]:
+                # Higher field points receives from lower
+                diff = field_points[i] - field_points[j]
                 temp_changes[i] += diff
                 temp_changes[j] -= diff
 
@@ -91,7 +93,6 @@ class Game:
         for i in range(4):
             self.players[i].add_point_history(temp_changes[i])
         
-        # Display results before archiving
         self.cur_round.get_round_info()
         self.round_history.append(self.cur_round)
 
@@ -104,7 +105,6 @@ class Game:
             self.consecutive_win_count = 0
             print(f"Dealer moves to {self.players[self.dealer_index].get_name()}")
         
-        # Create a new round object for the next round
         self.cur_round = Round(self.players, self.dealer_index)
 
 # Example Usage
@@ -112,12 +112,23 @@ if __name__ == "__main__":
     game = Game(['Player A', 'Player B', 'Player C', 'Player D'])
 
     print("--- Round 1: Dealer (A) wins with Ping Hu (1x) ---")
-    # A wins, multiplier 1, field points (A=2, B=1, C=0, D=0)
-    game.handle_round_end(0, 1, [2, 1, 0, 0])
+    # A wins, multiplier 1, field points [2, 1, 1, 1]
+    # A collects (5*1*2) + 2 = 12 from each B, C, D. Total +36.
+    # Losers (B, C, D) have identical field points (1), so no extra water transfers.
+    game.handle_round_end(0, 1, [2, 1, 1, 1])
 
-    print("--- Round 2: Non-dealer (B) wins with You Jin (5x) ---")
-    # B wins, multiplier 5, field points (A=0, B=5, C=2, D=1)
-    game.handle_round_end(1, 5, [0, 5, 2, 1])
+    print("--- Round 2: Non-dealer (B) wins with Multiplier 2 ---")
+    # B wins, multiplier 2, field points [0, 5, 2, 1]
+    # B collects from A (dealer): (5*2*2) + 5 = 25
+    # B collects from C: (5*2*1) + 5 = 15
+    # B collects from D: (5*2*1) + 5 = 15
+    # Total B gain: 25 + 15 + 15 = 55
+    # Water transfers among losers (A=0, C=2, D=1):
+    # C vs A: C receives 2.
+    # D vs A: D receives 1.
+    # C vs D: C receives 1.
+    # Final Changes: A: -25-2-1 = -28, C: -15+2+1 = -12, D: -15+1-1 = -15
+    game.handle_round_end(1, 2, [0, 5, 2, 1])
 
     print("\nFinal Total Scores:")
     for p in game.players:
