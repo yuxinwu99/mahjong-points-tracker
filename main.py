@@ -1,183 +1,124 @@
-from tabulate import tabulate
+from typing import List
+
 class Player:
-    def __init__(self, name, is_dealer=False):
+    def __init__(self, name: str):
         self.name = name
-        self.points = 0
-        self.is_dealer = is_dealer
+        self.points = []
+    
+    def get_name(self) -> str:
+        return self.name
 
-    def update_points(self, delta):
-        # Update player's points
-        self.points += delta
+    def get_cur_points(self) -> int:
+        return sum(self.points)
 
-    def reset_for_new_round(self):
-        self.is_dealer = False
+    def add_point_history(self, point: int):
+        self.points.append(point)
 
 class Round:
-    def display_round_summary(self, player_names, player_objects):
-        print(f"\n--- Round Summary (Multiplier: x{self.multiplier}) ---")
-        breakdown = self.get_breakdown(player_names)
-        table = []
-        for i, p in enumerate(player_objects):
-            score = self.scores[i]
-            winner = f"winner (x{self.multiplier})" if i == self.winner_index else ""
-            dealer = "Dealer" if p.is_dealer else ""
-            net_change = sum(amt for _, amt in breakdown[i])
-            total_points = p.points
-            breakdown_str = " ".join([f"{name} {amt:+d}" for name, amt in breakdown[i]])
-            table.append([p.name, score, winner, dealer, net_change, total_points, breakdown_str])
-        print(tabulate(table, headers=["Player", "Score", "Winner", "Dealer", "Net Change", "Total Points", "Breakdown"], tablefmt="grid"))
-    def display_round_scores(self, player_names):
-        print("Scores this round:")
-        for i, name in enumerate(player_names):
-            mark = " (winner)" if i == self.winner_index else ""
-            print(f"{name}: {self.scores[i]}{mark}")
-    def get_breakdown(self, player_names):
-        n = len(self.scores)
-        breakdown = [[] for _ in range(n)]
-        winner = self.winner_index
-        dealer = self.dealer_index
-        mult = self.multiplier
-        base_dealer = self.base_dealer
-        base_player = self.base_player
-        # Winner collects from all
-        for i in range(n):
-            if i == winner:
-                continue
-            if winner == dealer:
-                amount = base_dealer * mult + self.scores[winner]
-                breakdown[winner].append((player_names[i], amount))
-                breakdown[i].append((player_names[winner], -amount))
-            else:
-                if i == dealer:
-                    amount = base_dealer * mult + self.scores[winner]
-                else:
-                    amount = base_player * mult + self.scores[winner]
-                breakdown[winner].append((player_names[i], amount))
-                breakdown[i].append((player_names[winner], -amount))
-        # Losers pay difference to other losers
-        for i in range(n):
-            if i == winner:
-                continue
-            for j in range(n):
-                if j == winner or j == i:
-                    continue
-                if self.scores[j] > self.scores[i]:
-                    diff = self.scores[j] - self.scores[i]
-                    breakdown[i].append((player_names[j], -diff))
-                    breakdown[j].append((player_names[i], diff))
-        return breakdown
-    def __init__(self, scores, winner_index, dealer_index, multiplier=1, base_dealer=10, base_player=5):
-        self.scores = scores
-        self.winner_index = winner_index
+    def __init__(self, players: List[Player], dealer_index: int):
+        self.winner = None
+        self.players = players
         self.dealer_index = dealer_index
+        self.multiplier = 0
+        self.scores_before = [player.get_cur_points() for player in players]
+        self.scores_after = None
+        self.score_changes = None
+
+    def set_winner(self, winner_index: int, multiplier: int):
+        self.winner = self.players[winner_index].get_name()
         self.multiplier = multiplier
-        self.base_dealer = base_dealer
-        self.base_player = base_player
-
-    def calculate_net_points(self):
-        n = len(self.scores)
-        net_points = [0] * n
-        winner = self.winner_index
-        dealer = self.dealer_index
-        mult = self.multiplier
-        base_dealer = self.base_dealer
-        base_player = self.base_player
-        # Winner collects from all
-        for i in range(n):
-            if i == winner:
-                continue
-            if winner == dealer:
-                amount = base_dealer * mult + self.scores[winner]
-                net_points[winner] += amount
-                net_points[i] -= amount
-            else:
-                if i == dealer:
-                    amount = base_dealer * mult + self.scores[winner]
-                else:
-                    amount = base_player * mult + self.scores[winner]
-                net_points[winner] += amount
-                net_points[i] -= amount
-        # Losers pay difference to other losers
-        for i in range(n):
-            if i == winner:
-                continue
-            for j in range(n):
-                if j == winner or j == i:
-                    continue
-                if self.scores[j] > self.scores[i]:
-                    diff = self.scores[j] - self.scores[i]
-                    net_points[i] -= diff
-                    net_points[j] += diff
-        return net_points
-
-    def next_dealer_and_base(self):
-        # Determine next dealer and base
-        if self.winner_index == self.dealer_index:
-            return self.dealer_index, self.base_dealer
-        else:
-            return (self.dealer_index + 1) % len(self.scores), 10
+    
+    def update_score_with_change(self, score_changes: List[int]):
+        self.score_changes = score_changes
+        self.scores_after = [score_changes[i] + self.scores_before[i] for i in range(4)]
+    
+    def get_round_info(self):
+        print('========================================')
+        print(f'Dealer: {self.players[self.dealer_index].get_name()}')
+        print(f'Winner: {self.winner if self.winner else "N/A"} (x{self.multiplier})')
+        print('----------------------------------------')
+        print(f'Scores Before: {self.scores_before}')
+        print(f'Score Changes: {self.score_changes}')
+        print(f'Scores After:  {self.scores_after}')
+        print('========================================\n')
 
 class Game:
-    def __init__(self, player_names):
+    def __init__(self, player_names, dealer_index=0, base_score=5):
         self.players = [Player(name) for name in player_names]
-        self.dealer_index = 0
-        self.base_dealer = 10
-        self.base_player = 5
+        self.dealer_index = dealer_index
+        self.base_score = base_score
+        self.consecutive_win_count = 0
         self.round_history = []
-        self.round_number = 1
+        self.cur_round = Round(self.players, self.dealer_index)
+    
+    def handle_round_end(self, winner_index: int, multiplier: int, field_points: List[int]):
+        """
+        winner_index: 0-3
+        multiplier: Win strength (Ping Hu=1, Zi Mo=2, You Jin=5, etc.)
+        field_points: Points from Gold/Flowers/Kongs for each player
+        """
+        temp_changes = [0, 0, 0, 0]
+        self.cur_round.set_winner(winner_index, multiplier)
 
-    def start_new_round(self, scores, winner_index, multiplier=1):
-        # Use current base for calculation
-        round_obj = Round(scores, winner_index, self.dealer_index, multiplier, self.base_dealer, self.base_player)
-        net_points = round_obj.calculate_net_points()
-        for i, delta in enumerate(net_points):
-            self.players[i].update_points(delta)
-        # Update dealer for this round BEFORE summary print
-        next_dealer, _ = round_obj.next_dealer_and_base()
-        for i, p in enumerate(self.players):
-            p.is_dealer = (i == self.dealer_index)
-        print(f"\n--- Round {self.round_number} ---")
-        round_obj.display_round_summary([p.name for p in self.players], self.players)
-        # Update base for next round
-        if winner_index == self.dealer_index:
-            if self.base_dealer == 10:
-                self.base_dealer = 20
-            else:
-                self.base_dealer = 20
-        else:
-            self.base_dealer = 10
-        self.dealer_index = next_dealer
-        self.round_number += 1
-
-    def display_summary(self):
-        # Display current points and dealer
-        for p in self.players:
-            dealer_mark = " (Dealer)" if p.is_dealer else ""
-            print(f"{p.name}: {p.points}{dealer_mark}")
-
-
-if __name__ == "__main__":
-    import sys
-    lines = sys.stdin.read().splitlines()
-    idx = 0
-    player_names = []
-    for i in range(4):
-        player_names.append(lines[idx].strip())
-        idx += 1
-    game = Game(player_names)
-
-    while idx < len(lines):
-        scores = []
+        # 1. Calculate Base Payout (Dealer vs Non-Dealer)
+        # current_base starts at self.base_score and doubles for Lian Zhuang
+        current_base = self.base_score * (2 ** self.consecutive_win_count)
+        
+        # Winner's gain from each other player
         for i in range(4):
-            scores.append(int(lines[idx].strip()))
-            idx += 1
-        winner_name = lines[idx].strip()
-        idx += 1
-        winner_index = player_names.index(winner_name)
-        multiplier = int(lines[idx].strip())
-        idx += 1
-        game.start_new_round(scores, winner_index, multiplier)
+            if i == winner_index:
+                continue
+            
+            payout = current_base * multiplier
+            # If winner is dealer OR payer is dealer, double the payout
+            if winner_index == self.dealer_index or i == self.dealer_index:
+                payout *= 2
+            
+            temp_changes[winner_index] += payout
+            temp_changes[i] -= payout
 
+        # 2. Calculate "Water" Transfers (comparing field points between all pairs)
+        fp = list(field_points)
+        for i in range(4):
+            for j in range(i + 1, 4):
+                diff = fp[i] - fp[j]
+                # If i has more points, j pays i the difference
+                temp_changes[i] += diff
+                temp_changes[j] -= diff
 
+        # 3. Update scores and round state
+        self.cur_round.update_score_with_change(temp_changes)
+        for i in range(4):
+            self.players[i].add_point_history(temp_changes[i])
+        
+        # Display results before archiving
+        self.cur_round.get_round_info()
+        self.round_history.append(self.cur_round)
 
+        # 4. Update Dealer for the next round
+        if winner_index == self.dealer_index:
+            self.consecutive_win_count += 1
+            print(f"Lian Zhuang! {self.players[winner_index].get_name()} stays dealer (Count: {self.consecutive_win_count})")
+        else:
+            self.dealer_index = (self.dealer_index + 1) % 4
+            self.consecutive_win_count = 0
+            print(f"Dealer moves to {self.players[self.dealer_index].get_name()}")
+        
+        # Create a new round object for the next round
+        self.cur_round = Round(self.players, self.dealer_index)
 
+# Example Usage
+if __name__ == "__main__":
+    game = Game(['Player A', 'Player B', 'Player C', 'Player D'])
+
+    print("--- Round 1: Dealer (A) wins with Ping Hu (1x) ---")
+    # A wins, multiplier 1, field points (A=2, B=1, C=0, D=0)
+    game.handle_round_end(0, 1, [2, 1, 0, 0])
+
+    print("--- Round 2: Non-dealer (B) wins with You Jin (5x) ---")
+    # B wins, multiplier 5, field points (A=0, B=5, C=2, D=1)
+    game.handle_round_end(1, 5, [0, 5, 2, 1])
+
+    print("\nFinal Total Scores:")
+    for p in game.players:
+        print(f"{p.name}: {p.get_cur_points()}")
