@@ -1,6 +1,6 @@
 import sys
 import os
-from main import Game
+from mahjong_calculator import Game
 
 # ANSI colors for a more "premium" CLI feel
 class Colors:
