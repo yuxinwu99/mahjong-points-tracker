@@ -11,8 +11,8 @@ const translations = {
         history: "Round History",
         round_results: "Round Results",
         who_won: "Who won?",
-        multiplier: "Multiplier (Fan)",
-        field_points: "Field Points (Gold/Flowers/Kongs)",
+        multiplier: "Multiplier",
+        field_points: "Points",
         cancel: "Cancel",
         calculate: "Calculate",
         wins: "wins",
@@ -40,8 +40,8 @@ const translations = {
         history: "历史纪录",
         round_results: "回合结果",
         who_won: "谁赢了?",
-        multiplier: "番数 (倍率)",
-        field_points: "台费 (金/花/杠)",
+        multiplier: "倍率",
+        field_points: "分数 (金/花/杠)",
         cancel: "取消",
         calculate: "计算",
         wins: "获胜",
@@ -155,12 +155,25 @@ function updateScoreboard() {
         const ptsClass = pts > 0 ? 'plus' : (pts < 0 ? 'minus' : '');
         
         card.innerHTML = `
-            <span class="p-name">${player.name}${isDealer ? ` <span class="badge" style="margin-left: 4px;">${translations[currentLang].dealer}</span>` : ''}</span>
+            <span class="p-name">${player.name}${isDealer ? ` <span class="badge">${translations[currentLang].dealer}</span>` : ''}</span>
             <span class="p-points ${ptsClass}">${pts}</span>
         `;
         scoreboardGrid.appendChild(card);
     });
 }
+
+// Helper to select all on focus for number inputs
+function setupNumberInputs() {
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        if (!input.dataset.handled) {
+            input.addEventListener('focus', function() {
+                this.select();
+            });
+            input.dataset.handled = "true";
+        }
+    });
+}
+setupNumberInputs();
 
 // Round End Flow
 document.getElementById('btn-next-round').addEventListener('click', () => {
@@ -189,12 +202,13 @@ function openRoundModal() {
         const fpDiv = document.createElement('div');
         fpDiv.className = 'fp-input-row';
         fpDiv.innerHTML = `
-            <label>${p.name}${isDealer ? ` <span class="badge" style="margin-left: 4px;">${translations[currentLang].dealer}</span>` : ''}</label>
+            <label>${p.name}${isDealer ? ` <span class="badge">${translations[currentLang].dealer}</span>` : ''}</label>
             <input type="number" class="fp-val" data-idx="${i}" value="0">
         `;
         fieldPointsInputs.appendChild(fpDiv);
     });
 
+    setupNumberInputs();
     roundModal.classList.remove('hidden');
 }
 
