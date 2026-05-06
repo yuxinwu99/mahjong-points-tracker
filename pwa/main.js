@@ -23,7 +23,8 @@ const translations = {
         p2_name: "Player 2",
         p3_name: "Player 3",
         p4_name: "Player 4",
-        players_order_disclaimer: "(Please arrange in order)"
+        players_order_disclaimer: "(Please arrange in order)",
+        initial_dealer: "Initial Dealer"
     },
     zh: {
         setup_desc: "新游戏设置",
@@ -49,7 +50,8 @@ const translations = {
         p2_name: "玩家 2",
         p3_name: "玩家 3",
         p4_name: "玩家 4",
-        players_order_disclaimer: "(请按顺序排列)"
+        players_order_disclaimer: "(请按顺序排列)",
+        initial_dealer: "初始庄家"
     }
 };
 
@@ -149,7 +151,7 @@ function updateScoreboard() {
         const ptsClass = pts > 0 ? 'plus' : (pts < 0 ? 'minus' : '');
         
         card.innerHTML = `
-            <span class="p-name">${player.name}${isDealer ? ' <span class="badge" style="margin-left: 4px;">D</span>' : ''}</span>
+            <span class="p-name">${player.name}${isDealer ? ` <span class="badge" style="margin-left: 4px;">${translations[currentLang].dealer}</span>` : ''}</span>
             <span class="p-points ${ptsClass}">${pts}</span>
         `;
         scoreboardGrid.appendChild(card);
@@ -171,7 +173,7 @@ function openRoundModal() {
         const isDealer = i === game.dealerIndex;
         const opt = document.createElement('div');
         opt.className = 'p-option';
-        opt.innerHTML = `${p.name}${isDealer ? ' <span class="badge">D</span>' : ''}`;
+        opt.innerHTML = `${p.name}${isDealer ? ` <span class="badge">${translations[currentLang].dealer}</span>` : ''}`;
         opt.onclick = () => {
             document.querySelectorAll('.p-option').forEach(el => el.classList.remove('selected'));
             opt.classList.add('selected');
@@ -183,7 +185,7 @@ function openRoundModal() {
         const fpDiv = document.createElement('div');
         fpDiv.className = 'fp-input-row';
         fpDiv.innerHTML = `
-            <label>${p.name}${isDealer ? ' <span class="badge" style="margin-left: 4px;">D</span>' : ''}</label>
+            <label>${p.name}${isDealer ? ` <span class="badge" style="margin-left: 4px;">${translations[currentLang].dealer}</span>` : ''}</label>
             <input type="number" class="fp-val" data-idx="${i}" value="0">
         `;
         fieldPointsInputs.appendChild(fpDiv);
@@ -224,7 +226,14 @@ function addHistoryItem(result) {
     const winnerName = game.players[result.winnerIndex].name;
     const changesHtml = result.scoreChanges.map((change, i) => {
         const cls = change > 0 ? 'plus' : (change < 0 ? 'minus' : '');
-        return `<span class="change ${cls}">${change > 0 ? '+' : ''}${change}</span>`;
+        const playerName = game.players[i].name;
+        const isDealer = i === result.dealerIndex;
+        const dealerText = isDealer ? ` <span style="color: var(--accent); font-size: 0.65rem;">(${translations[currentLang].dealer})</span>` : '';
+        return `
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <span style="font-size: 0.7rem; color: var(--text-muted); text-align: center; line-height: 1.2;">${playerName}${dealerText}</span>
+                <span class="change ${cls}" style="font-size: 1rem; font-weight: bold;">${change > 0 ? '+' : ''}${change}</span>
+            </div>`;
     }).join('');
 
     item.innerHTML = `
@@ -232,7 +241,7 @@ function addHistoryItem(result) {
             <span>${translations[currentLang].round} ${result.roundNum}</span>
             <span class="hist-winner">${winnerName} ${translations[currentLang].wins} (x${result.multiplier})</span>
         </div>
-        <div class="hist-changes">
+        <div class="hist-changes" style="display: flex; justify-content: space-between; margin-top: 8px;">
             ${changesHtml}
         </div>
     `;
