@@ -25,11 +25,26 @@
             </header>
             <form id="setup-form">
                 <div class="input-group">
-                    <label data-i18n="players">Players</label>
-                    <input type="text" id="player1" required data-i18n-placeholder="p1_name" placeholder="Player 1">
-                    <input type="text" id="player2" required data-i18n-placeholder="p2_name" placeholder="Player 2">
-                    <input type="text" id="player3" required data-i18n-placeholder="p3_name" placeholder="Player 3">
-                    <input type="text" id="player4" required data-i18n-placeholder="p4_name" placeholder="Player 4">
+                    <label>
+                        <span data-i18n="players">Players</span>
+                        <span style="font-size: 0.8em; font-weight: normal; margin-left: 8px; color: var(--text-muted);" data-i18n="players_order_disclaimer">(Please arrange in order)</span>
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="initial-dealer" value="0" checked title="Initial Dealer" style="width: auto;">
+                        <input type="text" id="player1" required data-i18n-placeholder="p1_name" placeholder="Player 1" style="flex: 1;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="initial-dealer" value="1" title="Initial Dealer" style="width: auto;">
+                        <input type="text" id="player2" required data-i18n-placeholder="p2_name" placeholder="Player 2" style="flex: 1;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="initial-dealer" value="2" title="Initial Dealer" style="width: auto;">
+                        <input type="text" id="player3" required data-i18n-placeholder="p3_name" placeholder="Player 3" style="flex: 1;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="initial-dealer" value="3" title="Initial Dealer" style="width: auto;">
+                        <input type="text" id="player4" required data-i18n-placeholder="p4_name" placeholder="Player 4" style="flex: 1;">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label data-i18n="base_score">Base Score</label>

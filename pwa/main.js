@@ -22,7 +22,8 @@ const translations = {
         p1_name: "Player 1",
         p2_name: "Player 2",
         p3_name: "Player 3",
-        p4_name: "Player 4"
+        p4_name: "Player 4",
+        players_order_disclaimer: "(Please arrange in order)"
     },
     zh: {
         setup_desc: "新游戏设置",
@@ -47,7 +48,8 @@ const translations = {
         p1_name: "玩家 1",
         p2_name: "玩家 2",
         p3_name: "玩家 3",
-        p4_name: "玩家 4"
+        p4_name: "玩家 4",
+        players_order_disclaimer: "(请按顺序排列)"
     }
 };
 
@@ -112,8 +114,9 @@ setupForm.addEventListener('submit', (e) => {
         document.getElementById('player4').value
     ];
     const baseScore = parseInt(document.getElementById('base-score').value);
+    const initialDealerIndex = parseInt(document.querySelector('input[name="initial-dealer"]:checked').value);
     
-    game = new Game(names, baseScore);
+    game = new Game(names, baseScore, initialDealerIndex);
     initGameUI();
     setupScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
@@ -146,7 +149,7 @@ function updateScoreboard() {
         const ptsClass = pts > 0 ? 'plus' : (pts < 0 ? 'minus' : '');
         
         card.innerHTML = `
-            <span class="p-name">${player.name}${isDealer ? ' (D)' : ''}</span>
+            <span class="p-name">${player.name}${isDealer ? ' <span class="badge" style="margin-left: 4px;">D</span>' : ''}</span>
             <span class="p-points ${ptsClass}">${pts}</span>
         `;
         scoreboardGrid.appendChild(card);
@@ -165,9 +168,10 @@ function openRoundModal() {
 
     game.players.forEach((p, i) => {
         // Winner Selection
+        const isDealer = i === game.dealerIndex;
         const opt = document.createElement('div');
         opt.className = 'p-option';
-        opt.textContent = p.name;
+        opt.innerHTML = `${p.name}${isDealer ? ' <span class="badge">D</span>' : ''}`;
         opt.onclick = () => {
             document.querySelectorAll('.p-option').forEach(el => el.classList.remove('selected'));
             opt.classList.add('selected');
@@ -179,7 +183,7 @@ function openRoundModal() {
         const fpDiv = document.createElement('div');
         fpDiv.className = 'fp-input-row';
         fpDiv.innerHTML = `
-            <label>${p.name}</label>
+            <label>${p.name}${isDealer ? ' <span class="badge" style="margin-left: 4px;">D</span>' : ''}</label>
             <input type="number" class="fp-val" data-idx="${i}" value="0">
         `;
         fieldPointsInputs.appendChild(fpDiv);

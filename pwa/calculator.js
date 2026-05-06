@@ -14,10 +14,10 @@ class Player {
 }
 
 class Game {
-    constructor(playerNames, baseScore = 5) {
+    constructor(playerNames, baseScore = 5, initialDealerIndex = 0) {
         this.players = playerNames.map(name => new Player(name));
         this.baseScore = baseScore;
-        this.dealerIndex = 0;
+        this.dealerIndex = initialDealerIndex;
         this.lastWinnerIndex = null;
         this.currentStreakCount = 0;
         this.roundHistory = [];
