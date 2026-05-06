@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mahjong-V1.1';
+const CACHE_NAME = 'mahjong-V1.2';
 const ASSETS = [
     './',
     './index.html',
@@ -17,14 +17,6 @@ self.addEventListener('install', (event) => {
     );
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
-});
-
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
@@ -33,4 +25,21 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
+    // Ensure that updates to the service worker take effect immediately.
+    self.clients.claim();
 });
+
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+        })
+    );
+});
+
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+

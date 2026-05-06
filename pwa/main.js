@@ -24,7 +24,9 @@ const translations = {
         p3_name: "Player 3",
         p4_name: "Player 4",
         players_order_disclaimer: "(Please arrange in order)",
-        initial_dealer: "Initial Dealer"
+        initial_dealer: "Initial Dealer",
+        update_available: "New version available!",
+        update_now: "Update Now"
     },
     zh: {
         setup_desc: "新游戏设置",
@@ -51,7 +53,9 @@ const translations = {
         p3_name: "玩家 3",
         p4_name: "玩家 4",
         players_order_disclaimer: "(请按顺序排列)",
-        initial_dealer: "初始庄家"
+        initial_dealer: "初始庄家",
+        update_available: "有新版本可用！",
+        update_now: "立即更新"
     }
 };
 
@@ -259,8 +263,37 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then(reg => {
             console.log('SW registered:', reg);
+
+            // Check for updates
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // New service worker available
+                        showUpdateToast(newWorker);
+                    }
+                });
+            });
         }).catch(err => {
             console.log('SW registration failed:', err);
         });
+
+        // Handle the update activation
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                window.location.reload();
+                refreshing = true;
+            }
+        });
+    });
+}
+
+function showUpdateToast(newWorker) {
+    const toast = document.getElementById('update-toast');
+    toast.classList.remove('hidden');
+    document.getElementById('btn-update').addEventListener('click', () => {
+        newWorker.postMessage({ type: 'SKIP_WAITING' });
+        toast.classList.add('hidden');
     });
 }
