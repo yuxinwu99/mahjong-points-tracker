@@ -47,7 +47,8 @@ class Game:
         self.players = [Player(name) for name in player_names]
         self.dealer_index = dealer_index
         self.base_score = base_score
-        self.consecutive_win_count = 0
+        self.last_winner_index = None
+        self.current_streak_count = 0
         self.round_history = []
         self.cur_round = Round(self.players, self.dealer_index)
     
@@ -61,14 +62,19 @@ class Game:
         self.cur_round.set_winner(winner_index, multiplier)
         winner_fp = field_points[winner_index]
 
+        # Calculate consecutive win multiplier (1x, 2x, 4x cap)
+        if winner_index == self.last_winner_index:
+            consecutive_win_mult = 2 ** min(2, self.current_streak_count)
+        else:
+            consecutive_win_mult = 1
+
         # 1. Winner collects from everyone
-        # Formula: (Base * Multiplier * DealerMult) + Winner_Field
         for i in range(4):
             if i == winner_index:
                 continue
             
-            # Base part
-            base_payout = self.base_score * multiplier
+            # Base part: (Base * winning_mult * streak_mult)
+            base_payout = self.base_score * multiplier * consecutive_win_mult
             # Apply 2x if winner OR payer is dealer
             if winner_index == self.dealer_index or i == self.dealer_index:
                 base_payout *= 2
@@ -96,13 +102,17 @@ class Game:
         self.cur_round.get_round_info()
         self.round_history.append(self.cur_round)
 
-        # 4. Update Dealer for the next round
+        # 4. Update Streak and Dealer for the next round
+        if winner_index == self.last_winner_index:
+            self.current_streak_count += 1
+        else:
+            self.last_winner_index = winner_index
+            self.current_streak_count = 1
+
         if winner_index == self.dealer_index:
-            self.consecutive_win_count += 1
-            print(f"Lian Zhuang! {self.players[winner_index].get_name()} stays dealer (Count: {self.consecutive_win_count})")
+            print(f"Lian Zhuang! {self.players[winner_index].get_name()} stays dealer (Streak: {self.current_streak_count})")
         else:
             self.dealer_index = (self.dealer_index + 1) % 4
-            self.consecutive_win_count = 0
             print(f"Dealer moves to {self.players[self.dealer_index].get_name()}")
         
         self.cur_round = Round(self.players, self.dealer_index)
