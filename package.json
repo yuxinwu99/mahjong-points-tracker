@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "A professional Mahjong points tracker PWA",
   "scripts": {
-    "dev": "npx -y live-server pwa --port=8080 --no-browser"
+    "dev": "vite pwa --port 8080 --host"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
 }
