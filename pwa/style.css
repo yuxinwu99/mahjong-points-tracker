@@ -142,14 +142,114 @@ input[type="number"] {
     text-align: center;
 }
 
+/* Player Setup Cards */
+.player-setup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 2rem;
+}
+
+.player-setup-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.player-setup-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.player-setup-card:has(input[type="radio"]:checked) {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.player-setup-card input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.player-setup-card input[type="radio"]:checked {
+    border-color: var(--primary);
+    background: var(--primary);
+}
+
+.player-setup-card input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.p-setup-idx {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    width: 20px;
+}
+
+.player-setup-card input[type="text"] {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+    border-radius: 0;
+    backdrop-filter: none;
+}
+
+.player-setup-card input[type="text"]:focus {
+    box-shadow: none;
+    transform: none;
+}
+
+.setup-dealer-badge {
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+}
+
+.player-setup-card:has(input[type="radio"]:checked) .setup-dealer-badge {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 /* Buttons */
-.actions, .modal-actions {
+.actions {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     margin-top: 1.5rem;
     margin-bottom: 2.5rem;
 }
+
 
 .btn-primary {
     width: 100%;
@@ -249,11 +349,16 @@ input[type="number"] {
 .player-score {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 12px;
+    gap: 10px;
+    padding: 20px 12px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    transition: transform 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-score:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
 }
 
 .player-score.dealer {
@@ -299,16 +404,45 @@ input[type="number"] {
 }
 
 .modal-content {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
     max-width: 400px;
-    border-radius: 24px;
-    padding: 24px;
-    max-height: 90vh;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+#round-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.modal-scroll-area {
+    padding: 24px 24px 0 24px;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    flex: 1;
+}
+
+.modal-content h2 {
+    padding: 24px 24px 0 24px;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+.modal-actions {
+    padding: 20px 24px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 0;
 }
 
 .player-select-grid {
@@ -372,6 +506,7 @@ input[type="number"] {
     align-items: center;
     justify-content: center;
     gap: 4px;
+    text-transform: none;
 }
 
 /* History */
