@@ -1,7 +1,7 @@
 {
   "name": "Mahjong Points Tracker",
   "short_name": "MahjongPoints",
-  "description": "A premium, offline-capable Mahjong points calculator.",
+  "description": "A offline-capable Mahjong points calculator.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
