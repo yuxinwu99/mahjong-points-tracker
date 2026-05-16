@@ -73,7 +73,7 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
                     >
                       <span className="text-sm truncate w-full px-2 text-center">{p.name}</span>
                       {i === state.dealerIndex && (
-                        <span className={`text-[9px] uppercase mt-1 ${field.state.value === i ? 'text-indigo-400' : 'text-slate-500'}`}>
+                        <span className={`text-xs uppercase mt-1 ${field.state.value === i ? 'text-indigo-400' : 'text-slate-500'}`}>
                           {t('game.dealer')}
                         </span>
                       )}
@@ -137,7 +137,7 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{p.name}</span>
                         {i === state.dealerIndex && (
-                          <span className="text-[10px] text-indigo-500 font-black">({t('game.dealer')})</span>
+                          <span className="text-xs text-indigo-500 font-black">({t('game.dealer')})</span>
                         )}
                       </div>
                       <input

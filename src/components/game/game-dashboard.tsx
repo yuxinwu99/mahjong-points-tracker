@@ -28,17 +28,17 @@ export function GameDashboard() {
       {/* Header Info - Recreating PWA Style */}
       <div className="flex justify-between items-stretch gap-4">
         <div className="flex-1 bg-slate-100 dark:bg-slate-900/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
-          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.round')}</span>
+          <span className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.round')}</span>
           <span className="text-3xl font-black text-indigo-500">{state.roundNum}</span>
         </div>
         <div className="flex-[2] bg-slate-100 dark:bg-slate-900/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 relative flex flex-col items-center justify-center">
-          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.dealer')}</span>
+          <span className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.dealer')}</span>
           <span className="text-xl font-black text-slate-900 dark:text-white truncate max-w-full">
             {state.players[state.dealerIndex].name}
           </span>
           {state.currentStreakCount > 1 && (
             <div className="absolute -top-2 -right-2">
-              <Badge className="bg-emerald-500 text-white font-black text-[10px] border-none px-2 shadow-lg">
+              <Badge className="bg-emerald-500 text-white font-black text-xs border-none px-2 shadow-lg">
                 {t('game.lian')} {state.currentStreakCount - 1}
               </Badge>
             </div>
@@ -65,7 +65,7 @@ export function GameDashboard() {
                     {player.name}
                   </span>
                   {isDealer && (
-                    <Badge className="bg-indigo-500 text-white font-black text-[10px] border-none py-0 px-1.5 leading-4 h-4">
+                    <Badge className="bg-indigo-500 text-white font-black text-xs border-none py-0 px-1.5 leading-4 h-4">
                       {t('game.dealer')}
                     </Badge>
                   )}

@@ -71,7 +71,7 @@ export function EditRoundDialog({ round, isOpen, onClose }: EditRoundDialogProps
         >
           {/* Disclaimer */}
           <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
-            <p className="text-[10px] text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
+            <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
               {t('game.edit_disclaimer')}
             </p>
           </div>
@@ -97,7 +97,7 @@ export function EditRoundDialog({ round, isOpen, onClose }: EditRoundDialogProps
                     >
                       <span className="text-sm truncate w-full px-2 text-center">{p.name}</span>
                       {i === round.dealerIndex && (
-                        <span className={`text-[9px] uppercase mt-1 ${field.state.value === i ? 'text-indigo-400' : 'text-slate-500'}`}>
+                        <span className={`text-xs uppercase mt-1 ${field.state.value === i ? 'text-indigo-400' : 'text-slate-500'}`}>
                           {t('game.dealer')}
                         </span>
                       )}
@@ -161,7 +161,7 @@ export function EditRoundDialog({ round, isOpen, onClose }: EditRoundDialogProps
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{p.name}</span>
                         {i === round.dealerIndex && (
-                          <span className="text-[10px] text-indigo-500 font-black">({t('game.dealer')})</span>
+                          <span className="text-xs text-indigo-500 font-black">({t('game.dealer')})</span>
                         )}
                       </div>
                       <input

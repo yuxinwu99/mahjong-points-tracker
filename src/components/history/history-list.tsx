@@ -30,7 +30,7 @@ export function HistoryList() {
       </div>
 
       <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-3 rounded-xl">
-        <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
+        <p className="text-xs text-slate-500 dark:text-slate-400 italic">
           {t('game.edit_disclaimer')}
         </p>
       </div>
@@ -38,7 +38,7 @@ export function HistoryList() {
       <div className="space-y-4">
         {reversedHistory.length === 0 ? (
           <div className="text-center py-12 text-slate-500 dark:text-slate-400">
-            No history yet
+            {t('game.no_history')}
           </div>
         ) : (
           reversedHistory.map((round, idx) => (
@@ -47,7 +47,7 @@ export function HistoryList() {
                 <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-indigo-600 dark:text-indigo-400">{t('game.round')} {round.roundNum}</span>
-                    <Badge variant="outline" className="text-[10px] uppercase border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400">
+                    <Badge variant="outline" className="text-xs uppercase border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400">
                       x{round.multiplier}
                     </Badge>
                   </div>
@@ -73,7 +73,7 @@ export function HistoryList() {
                   <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center">
                     <div />
                     {state.players.map((p, pIdx) => (
-                      <div key={pIdx} className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase text-center truncate">
+                      <div key={pIdx} className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase text-center truncate">
                         {p.name}
                       </div>
                     ))}
@@ -81,7 +81,7 @@ export function HistoryList() {
 
                   {/* Score Change Row */}
                   <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-800/50">
-                    <div className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
+                    <div className="text-xs font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
                       {t('game.score_change')}
                     </div>
                     {round.scoreChanges.map((change, pIdx) => (
@@ -93,7 +93,7 @@ export function HistoryList() {
 
                   {/* Field Points Row */}
                   <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-800/50">
-                    <div className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
+                    <div className="text-xs font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
                       {t('game.field_points_short')}
                     </div>
                     {round.fieldPoints.map((pts, pIdx) => (
@@ -105,7 +105,7 @@ export function HistoryList() {
 
                   {/* Total Score Row */}
                   <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2">
-                    <div className="text-[10px] font-black text-indigo-400 dark:text-indigo-600 uppercase tracking-tighter">
+                    <div className="text-xs font-black text-indigo-400 dark:text-indigo-600 uppercase tracking-tighter">
                       {t('game.total_score')}
                     </div>
                     {round.scoresAfter.map((total, pIdx) => (

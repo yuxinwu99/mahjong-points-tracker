@@ -31,7 +31,7 @@ const resources = {
         cancel: "Cancel",
         calculate: "Calculate",
         wins: "wins",
-        lian: "Lian",
+        lian: "Streak",
         confirm_end: "Are you sure you want to end the session? All current scores will be lost.",
         select_winner: "Please select a winner",
         edit_round: "Edit Round",
@@ -41,6 +41,7 @@ const resources = {
         score_change: "Score Change",
         field_points_short: "Field Points",
         total_score: "Total Score",
+        no_history: "No history yet",
         edit_disclaimer: "Only the most recent round can be edited to ensure point consistency."
       },
       pwa: {
@@ -87,6 +88,7 @@ const resources = {
         score_change: "分数变化",
         field_points_short: "场上分数",
         total_score: "总得分",
+        no_history: "暂无历史记录",
         edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。"
       },
       pwa: {

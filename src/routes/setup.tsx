@@ -54,7 +54,7 @@ function SetupPage() {
             <Label className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {t('setup.players')}
             </Label>
-            <span className="text-[10px] text-slate-400 font-normal">{t('setup.order_disclaimer')}</span>
+            <span className="text-xs text-slate-400 font-normal">{t('setup.order_disclaimer')}</span>
           </div>
 
           <div className="space-y-2">
@@ -96,7 +96,7 @@ function SetupPage() {
                         )}
                       />
                       {field.state.value === i && (
-                        <span className="text-[10px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded tracking-tighter">
+                        <span className="text-xs font-black bg-indigo-500 text-white px-2 py-0.5 rounded tracking-tighter">
                           {t('game.dealer')}
                         </span>
                       )}
