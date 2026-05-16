@@ -15,7 +15,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'logo192.png', 'logo512.png'],
       manifest: {
         name: 'Mahjong Points Tracker',
         short_name: 'MahjongPoints',
@@ -26,7 +26,17 @@ export default defineConfig({
         orientation: 'portrait',
         icons: [
           {
-            src: 'https://cdn-icons-png.flaticon.com/512/1041/1041916.png',
+            src: 'logo192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'logo512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'logo512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
