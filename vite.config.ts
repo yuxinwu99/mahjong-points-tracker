@@ -6,6 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/mahjong-points-tracker/',
   plugins: [
     TanStackRouterVite({
       target: 'react',
@@ -19,7 +20,7 @@ export default defineConfig({
       manifest: {
         name: 'Mahjong Points Tracker',
         short_name: 'MahjongPoints',
-        description: 'A offline-capable Mahjong points tracker.',
+        description: 'An offline-capable Mahjong points tracker.',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',
         display: 'standalone',
