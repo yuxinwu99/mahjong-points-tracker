@@ -15,6 +15,7 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
+    basepath: '/mahjong-points-tracker/',
   })
 
   setupRouterSsrQueryIntegration({ router, queryClient: context.queryClient })
