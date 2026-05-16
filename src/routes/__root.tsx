@@ -2,9 +2,12 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  Outlet,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { AppShell } from '../components/layout/app-shell'
+import '../lib/i18n' // Initialize i18n
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -27,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Mahjong Points Tracker',
       },
     ],
     links: [
@@ -37,8 +40,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
-  shellComponent: RootDocument,
+  component: RootComponent,
 })
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <AppShell>
+        <Outlet />
+      </AppShell>
+    </RootDocument>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

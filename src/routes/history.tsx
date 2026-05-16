@@ -1,18 +1,18 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { useStore } from '@tanstack/react-store';
 import { gameStore } from '../store/game-store';
-import { GameDashboard } from '../components/game/game-dashboard';
+import { HistoryList } from '../components/history/history-list';
 
-export const Route = createFileRoute('/')({
-  component: HomePage,
+export const Route = createFileRoute('/history')({
+  component: HistoryPage,
 });
 
-function HomePage() {
+function HistoryPage() {
   const gameState = useStore(gameStore);
 
   if (!gameState) {
     return <Navigate to="/setup" />;
   }
 
-  return <GameDashboard />;
+  return <HistoryList />;
 }
