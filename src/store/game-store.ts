@@ -1,6 +1,6 @@
 import { Store } from '@tanstack/react-store';
 import type { GameState } from '../types/game';
-import { MahjongEngine } from '../lib/game-logic/mahjong-calculator-engine/engine';
+import { MahjongEngine } from '../lib/mahjong-calculator-engine/engine';
 
 export const gameStore = new Store<GameState | null>(null);
 
