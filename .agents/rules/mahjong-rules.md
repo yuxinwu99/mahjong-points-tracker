@@ -21,9 +21,9 @@ trigger: always_on
 ### 3. Payout Formula
 When a round ends, each loser pays the winner individually:
 *   **If Loser is the Dealer**: 
-    `Payout = (Dealer's Base * Round Multiplier) + Loser's Field Points`
+    `Payout = (Dealer's Base * Round Multiplier) + winner's Field Points`
 *   **If Loser is NOT the Dealer**: 
-    `Payout = (Winner's Base * Round Multiplier) + Loser's Field Points`
+    `Payout = (Winner's Base * Round Multiplier) + winner's Field Points`
 
 ### 4. Water (Loser Settlement)
 After the winner is paid, the three losers compare their **Field Points** with each other:

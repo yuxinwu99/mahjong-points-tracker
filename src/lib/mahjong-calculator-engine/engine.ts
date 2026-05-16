@@ -38,8 +38,8 @@ export class MahjongEngine {
       // otherwise they pay based on the winner's base.
       const usedBase = (i === gameState.dealerIndex) ? dealerBase : winnerBase;
       
-      // Payout = (UsedBase * Multiplier) + Loser's Field Points
-      const payout = (usedBase * multiplier) + fieldPoints[i];
+      // Payout = (UsedBase * Multiplier) + Winner's Field Points
+      const payout = (usedBase * multiplier) + fieldPoints[winnerIndex];
       
       tempChanges[winnerIndex] += payout;
       tempChanges[i] -= payout;
