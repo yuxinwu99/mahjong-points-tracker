@@ -4,7 +4,7 @@ import { gameStore, resetGame } from '../../store/game-store';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { History, LogOut, PlusCircle } from 'lucide-react';
+import { History, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { RoundModal } from './round-modal';
 import { useNavigate } from '@tanstack/react-router';
@@ -24,69 +24,89 @@ export function GameDashboard() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header Info */}
-      <div className="flex justify-between items-end">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-neutral-400">
-            {t('game.round')} <span className="text-white text-lg">{state.roundNum}</span>
-          </p>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20 px-3 py-1">
-              {t('game.dealer')}: {state.players[state.dealerIndex].name}
-            </Badge>
-            {state.currentStreakCount > 1 && (
-              <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+    <div className="space-y-6 animate-in fade-in duration-700">
+      {/* Header Info - Recreating PWA Style */}
+      <div className="flex justify-between items-stretch gap-4">
+        <div className="flex-1 bg-slate-100 dark:bg-slate-900/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
+          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.round')}</span>
+          <span className="text-3xl font-black text-indigo-500">{state.roundNum}</span>
+        </div>
+        <div className="flex-[2] bg-slate-100 dark:bg-slate-900/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 relative flex flex-col items-center justify-center">
+          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('game.dealer')}</span>
+          <span className="text-xl font-black text-slate-900 dark:text-white truncate max-w-full">
+            {state.players[state.dealerIndex].name}
+          </span>
+          {state.currentStreakCount > 1 && (
+            <div className="absolute -top-2 -right-2">
+              <Badge className="bg-emerald-500 text-white font-black text-[10px] border-none px-2 shadow-lg">
                 {t('game.lian')} {state.currentStreakCount - 1}
               </Badge>
-            )}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => navigate({ to: '/history' })} className="rounded-full">
-            <History className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleEndSession} className="rounded-full text-red-400 hover:text-red-300">
-            <LogOut className="w-5 h-5" />
-          </Button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Scoreboard */}
-      <div className="grid grid-cols-2 gap-4">
-        {state.players.map((player, i) => {
-          const points = player.history.reduce((a, b) => a + b, 0);
-          const isDealer = i === state.dealerIndex;
-          
-          return (
-            <Card key={i} className={`relative overflow-hidden border-neutral-800 bg-neutral-900/40 backdrop-blur-sm transition-all duration-300 ${isDealer ? 'ring-2 ring-indigo-500/30 border-indigo-500/30' : ''}`}>
-              <CardContent className="p-6 flex flex-col items-center justify-center space-y-2">
-                <span className="text-sm font-medium text-neutral-400 truncate w-full text-center">
-                  {player.name}
+      {/* Scoreboard Grid - Recreating PWA Style */}
+      <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10">
+        <div className="grid grid-cols-1 divide-y divide-slate-100 dark:divide-slate-800">
+          {state.players.map((player, i) => {
+            const points = player.history.reduce((a, b) => a + b, 0);
+            const isDealer = i === state.dealerIndex;
+            
+            return (
+              <div 
+                key={i} 
+                className={`flex items-center justify-between p-6 transition-colors ${
+                  isDealer ? 'bg-indigo-50/30 dark:bg-indigo-500/5' : ''
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className={`text-sm font-black ${isDealer ? 'text-indigo-500' : 'text-slate-400'}`}>
+                    {player.name}
+                  </span>
+                  {isDealer && (
+                    <Badge className="bg-indigo-500 text-white font-black text-[10px] border-none py-0 px-1.5 leading-4 h-4">
+                      {t('game.dealer')}
+                    </Badge>
+                  )}
+                </div>
+                <span className={`text-2xl font-black tabular-nums ${
+                  points > 0 ? 'text-emerald-500' : points < 0 ? 'text-red-500' : 'text-slate-900 dark:text-white'
+                }`}>
+                  {points}
                 </span>
-                <span className={`text-3xl font-bold tabular-nums ${points > 0 ? 'text-emerald-400' : points < 0 ? 'text-red-400' : 'text-neutral-200'}`}>
-                  {points > 0 ? '+' : ''}{points}
-                </span>
-                {isDealer && (
-                  <div className="absolute top-0 right-0 p-1">
-                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="pt-4">
+      <div className="flex flex-col gap-3">
         <Button 
           onClick={() => setIsModalOpen(true)}
-          className="w-full h-16 text-lg font-bold bg-indigo-600 hover:bg-indigo-500 shadow-xl shadow-indigo-500/20 rounded-2xl group transition-all"
+          className="w-full h-16 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xl uppercase tracking-wide transition-all shadow-xl shadow-indigo-500/20 rounded-2xl"
         >
-          <PlusCircle className="mr-2 w-6 h-6 group-hover:scale-110 transition-transform" />
           {t('game.end_round')}
         </Button>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate({ to: '/history' })} 
+            className="flex-1 h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-bold uppercase text-xs tracking-widest rounded-xl"
+          >
+            <History className="mr-2 w-4 h-4" />
+            {t('game.history')}
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={handleEndSession}
+            className="flex-1 h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-red-500 dark:text-red-400 font-bold uppercase text-xs tracking-widest rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10"
+          >
+            <LogOut className="mr-2 w-4 h-4" />
+            {t('game.end_session')}
+          </Button>
+        </div>
       </div>
 
       <RoundModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

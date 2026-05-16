@@ -19,7 +19,7 @@ export default defineConfig({
       manifest: {
         name: 'Mahjong Points Tracker',
         short_name: 'MahjongPoints',
-        description: 'A premium offline-capable Mahjong points tracker.',
+        description: 'A offline-capable Mahjong points tracker.',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',
         display: 'standalone',

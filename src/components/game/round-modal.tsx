@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '@tanstack/react-store';
 import { gameStore, addRound } from '../../store/game-store';
 import { useForm } from '@tanstack/react-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Minus, Plus } from 'lucide-react';
 
 interface RoundModalProps {
   isOpen: boolean;
@@ -37,9 +38,9 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-50 overflow-y-auto max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle>{t('game.round_results')}</DialogTitle>
+      <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 border-none text-slate-900 dark:text-slate-50 p-0 overflow-hidden rounded-3xl shadow-3xl">
+        <DialogHeader className="p-6 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+          <DialogTitle className="text-xl font-black uppercase tracking-tight">{t('game.round_results')}</DialogTitle>
         </DialogHeader>
 
         <form
@@ -48,11 +49,11 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-6 py-4"
+          className="p-6 space-y-8 overflow-y-auto max-h-[70vh]"
         >
-          {/* Winner Selection */}
-          <div className="space-y-3">
-            <Label className="text-sm font-semibold text-neutral-400 uppercase tracking-wider">
+          {/* Winner Selection - Recreating PWA Style */}
+          <div className="space-y-4">
+            <Label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
               {t('game.who_won')}
             </Label>
             <div className="grid grid-cols-2 gap-2">
@@ -61,66 +62,87 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
                   key={i}
                   name="winnerIndex"
                   children={(field) => (
-                    <Button
+                    <button
                       type="button"
-                      variant={field.state.value === i ? 'default' : 'outline'}
-                      className={`h-12 border-neutral-800 ${field.state.value === i ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-neutral-950 hover:bg-neutral-900'}`}
                       onClick={() => field.handleChange(i)}
+                      className={`h-16 rounded-2xl border-2 font-black transition-all flex flex-col items-center justify-center relative overflow-hidden ${
+                        field.state.value === i
+                          ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400'
+                          : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-600'
+                      }`}
                     >
-                      {p.name}
+                      <span className="text-sm truncate w-full px-2 text-center">{p.name}</span>
                       {i === state.dealerIndex && (
-                        <span className="ml-2 text-[10px] bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded">
+                        <span className={`text-[9px] uppercase mt-1 ${field.state.value === i ? 'text-indigo-400' : 'text-slate-500'}`}>
                           {t('game.dealer')}
                         </span>
                       )}
-                    </Button>
+                      {field.state.value === i && (
+                        <div className="absolute top-0 right-0 p-1">
+                          <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                        </div>
+                      )}
+                    </button>
                   )}
                 />
               ))}
             </div>
           </div>
 
-          {/* Multiplier */}
+          {/* Multiplier - Recreating PWA Style with +/- Buttons */}
           <form.Field
             name="multiplier"
             children={(field) => (
-              <div className="space-y-3">
-                <Label htmlFor="multiplier" className="text-sm font-semibold text-neutral-400 uppercase tracking-wider">
+              <div className="space-y-4">
+                <Label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                   {t('game.multiplier')}
                 </Label>
-                <Input
-                  id="multiplier"
-                  type="number"
-                  min={1}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(parseInt(e.target.value) || 1)}
-                  className="bg-neutral-950 border-neutral-800 h-12 text-lg"
-                />
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-14 h-14 rounded-2xl border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    onClick={() => field.handleChange(Math.max(1, field.state.value - 1))}
+                  >
+                    <Minus className="w-6 h-6" />
+                  </Button>
+                  <div className="flex-1 h-14 bg-slate-50 dark:bg-slate-950 rounded-2xl border-2 border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl font-black text-slate-900 dark:text-white">
+                    {field.state.value}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-14 h-14 rounded-2xl border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+                    onClick={() => field.handleChange(field.state.value + 1)}
+                  >
+                    <Plus className="w-6 h-6" />
+                  </Button>
+                </div>
               </div>
             )}
           />
 
-          {/* Field Points */}
-          <div className="space-y-3">
-            <Label className="text-sm font-semibold text-neutral-400 uppercase tracking-wider">
+          {/* Field Points - Recreating PWA List Style */}
+          <div className="space-y-4">
+            <Label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
               {t('game.field_points')}
             </Label>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {state.players.map((p, i) => (
                 <form.Field
                   key={i}
                   name={`fieldPoints[${i}]` as any}
                   children={(field) => (
-                    <div className="flex items-center justify-between gap-4 bg-neutral-950 p-3 rounded-lg border border-neutral-800">
-                      <Label className="text-sm font-medium truncate flex-1">
-                        {p.name}
+                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{p.name}</span>
                         {i === state.dealerIndex && (
-                          <span className="ml-2 text-[10px] text-indigo-400">({t('game.dealer')})</span>
+                          <span className="text-[10px] text-indigo-500 font-black">({t('game.dealer')})</span>
                         )}
-                      </Label>
-                      <Input
+                      </div>
+                      <input
                         type="number"
-                        className="w-24 bg-neutral-900 border-neutral-800 h-9"
+                        className="w-20 bg-white dark:bg-slate-900 border-none focus:ring-0 rounded-lg h-9 text-right font-black text-slate-900 dark:text-white p-2"
                         value={field.state.value}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => field.handleChange(parseInt(e.target.value) || 0)}
@@ -132,14 +154,22 @@ export function RoundModal({ isOpen, onClose }: RoundModalProps) {
             </div>
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button type="button" variant="ghost" onClick={onClose} className="flex-1 sm:flex-none">
-              {t('game.cancel')}
-            </Button>
-            <Button type="submit" className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500">
+          <div className="flex gap-3 pt-4">
+            <Button 
+              type="submit" 
+              className="flex-[2] h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg uppercase tracking-wide rounded-2xl shadow-xl shadow-indigo-500/20"
+            >
               {t('game.calculate')}
             </Button>
-          </DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose} 
+              className="flex-1 h-14 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 font-bold uppercase text-xs tracking-widest rounded-2xl"
+            >
+              {t('game.cancel')}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
