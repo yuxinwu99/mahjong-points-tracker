@@ -1,5 +1,6 @@
 export interface PlayerState {
   name: string;
+  streak: number; // 0, 1, or 2 (for 5, 10, 20 base)
   history: number[]; // Array of score changes
 }
 
