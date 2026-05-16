@@ -5,6 +5,10 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      common: {
+        app_name: "Mahjong Points",
+        app_tracker: "Mahjong Tracker"
+      },
       setup: {
         title: "New Game Setup",
         players: "Players",
@@ -39,6 +43,10 @@ const resources = {
   },
   zh: {
     translation: {
+      common: {
+        app_name: "麻将计分",
+        app_tracker: "麻将记分器"
+      },
       setup: {
         title: "新游戏设置",
         players: "玩家",
@@ -78,7 +86,12 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
+    supportedLngs: ['en', 'zh'],
     fallbackLng: 'en',
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage', 'cookie'],
+    },
     interpolation: {
       escapeValue: false
     }

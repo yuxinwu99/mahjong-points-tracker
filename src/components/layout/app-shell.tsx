@@ -5,9 +5,12 @@ import { Languages, Moon, Sun } from 'lucide-react';
 import i18n from '../../lib/i18n';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark') ? 'dark' : 'dark'; // Default to dark for premium feel
+      if (document.documentElement.classList.contains('dark')) return 'dark';
+      if (document.documentElement.classList.contains('light')) return 'light';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     return 'dark';
   });
@@ -38,7 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className={`sticky top-0 z-50 w-full border-b backdrop-blur-xl ${theme === 'dark' ? 'border-slate-800 bg-slate-950/80' : 'border-slate-200 bg-white/80'}`}>
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-            Mahjong Points
+            {t('common.app_name')}
           </h1>
           <div className="flex items-center gap-2">
             <Button

@@ -32,7 +32,11 @@ function SetupPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-md mx-auto">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-          Mahjong<span className="text-indigo-500">Tracker</span>
+          {t('common.app_tracker').includes('Mahjong') ? (
+            <>Mahjong<span className="text-indigo-500">Tracker</span></>
+          ) : (
+            t('common.app_tracker')
+          )}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 font-medium">{t('setup.title')}</p>
       </div>
