@@ -123,4 +123,46 @@ export class MahjongEngine {
       roundNum: 1
     };
   }
+
+  /**
+   * Recalculates the entire game state by replaying history with a modified round.
+   */
+  static recalculateState(
+    gameState: GameState,
+    targetRoundNum: number,
+    newData: { winnerIndex: number; multiplier: number; fieldPoints: number[] }
+  ): GameState {
+    const playerNames = gameState.players.map(p => p.name);
+    const initialDealerIndex = gameState.roundHistory.length > 0 
+      ? gameState.roundHistory[0].dealerIndex 
+      : gameState.dealerIndex;
+
+    let currentState = this.createInitialState(playerNames, gameState.baseScore, initialDealerIndex);
+
+    for (const round of gameState.roundHistory) {
+      const data = round.roundNum === targetRoundNum ? newData : round;
+      currentState = this.nextState(currentState, data.winnerIndex, data.multiplier, data.fieldPoints);
+    }
+
+    return currentState;
+  }
+
+  /**
+   * Deletes a round and recalculates subsequent state.
+   */
+  static deleteRound(gameState: GameState, targetRoundNum: number): GameState {
+    const playerNames = gameState.players.map(p => p.name);
+    const initialDealerIndex = gameState.roundHistory.length > 0 
+      ? gameState.roundHistory[0].dealerIndex 
+      : gameState.dealerIndex;
+
+    let currentState = this.createInitialState(playerNames, gameState.baseScore, initialDealerIndex);
+
+    for (const round of gameState.roundHistory) {
+      if (round.roundNum === targetRoundNum) continue;
+      currentState = this.nextState(currentState, round.winnerIndex, round.multiplier, round.fieldPoints);
+    }
+
+    return currentState;
+  }
 }

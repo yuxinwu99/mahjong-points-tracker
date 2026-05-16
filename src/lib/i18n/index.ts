@@ -33,7 +33,15 @@ const resources = {
         wins: "wins",
         lian: "Lian",
         confirm_end: "Are you sure you want to end the session? All current scores will be lost.",
-        select_winner: "Please select a winner"
+        select_winner: "Please select a winner",
+        edit_round: "Edit Round",
+        save: "Save Changes",
+        delete: "Delete Round",
+        confirm_delete: "Are you sure you want to delete this round? This will recalculate all subsequent rounds.",
+        score_change: "Score Change",
+        field_points_short: "Field Points",
+        total_score: "Total Score",
+        edit_disclaimer: "Only the most recent round can be edited to ensure point consistency."
       },
       pwa: {
         update_available: "New version available!",
@@ -71,7 +79,15 @@ const resources = {
         wins: "获胜",
         lian: "连庄",
         confirm_end: "您确定要结束游戏吗？所有当前分数都将丢失。",
-        select_winner: "请选择获胜者"
+        select_winner: "请选择获胜者",
+        edit_round: "编辑回合",
+        save: "保存更改",
+        delete: "删除回合",
+        confirm_delete: "您确定要删除此回合吗？这将重新计算所有后续回合。",
+        score_change: "分数变化",
+        field_points_short: "场上分数",
+        total_score: "总得分",
+        edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。"
       },
       pwa: {
         update_available: "有新版本可用！",

@@ -16,6 +16,20 @@ export const addRound = (winnerIndex: number, multiplier: number, fieldPoints: n
   });
 };
 
+export const updateRound = (roundNum: number, winnerIndex: number, multiplier: number, fieldPoints: number[]) => {
+  gameStore.setState((state) => {
+    if (!state || roundNum !== state.roundHistory.length) return state;
+    return MahjongEngine.recalculateState(state, roundNum, { winnerIndex, multiplier, fieldPoints });
+  });
+};
+
+export const deleteRound = (roundNum: number) => {
+  gameStore.setState((state) => {
+    if (!state || roundNum !== state.roundHistory.length) return state;
+    return MahjongEngine.deleteRound(state, roundNum);
+  });
+};
+
 export const resetGame = () => {
   gameStore.setState(() => null);
 };
