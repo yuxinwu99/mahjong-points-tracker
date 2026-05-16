@@ -65,20 +65,25 @@ function SetupPage() {
                   {form.state.values.players.map((_, i) => (
                     <div
                       key={i}
-                      onClick={() => field.handleChange(i)}
-                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
                         field.state.value === i
                           ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10'
-                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-700'
+                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50'
                       }`}
                     >
-                      <input
-                        type="radio"
-                        readOnly
-                        checked={field.state.value === i}
-                        className="w-5 h-5 accent-indigo-500 cursor-pointer pointer-events-none"
-                      />
-                      <span className="text-xs font-bold text-slate-400 w-4 text-center pointer-events-none">{i + 1}</span>
+                      <div 
+                        className="flex items-center gap-3 cursor-pointer"
+                        onClick={() => field.handleChange(i)}
+                      >
+                        <input
+                          type="radio"
+                          readOnly
+                          checked={field.state.value === i}
+                          className="w-5 h-5 accent-indigo-500 cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-slate-400 w-4 text-center">{i + 1}</span>
+                      </div>
+                      
                       <form.Field
                         name={`players[${i}]` as any}
                         children={(playerField) => (
@@ -87,12 +92,11 @@ function SetupPage() {
                             value={playerField.state.value}
                             onChange={(e) => playerField.handleChange(e.target.value)}
                             className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-slate-900 dark:text-white font-semibold placeholder:text-slate-400"
-                            onClick={(e) => e.stopPropagation()}
                           />
                         )}
                       />
                       {field.state.value === i && (
-                        <span className="text-[10px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded tracking-tighter pointer-events-none">
+                        <span className="text-[10px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded tracking-tighter">
                           {t('game.dealer')}
                         </span>
                       )}
