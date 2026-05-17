@@ -2,7 +2,28 @@ import { Store } from '@tanstack/react-store';
 import type { GameState } from '../types/game';
 import { MahjongEngine } from '../lib/mahjong-calculator-engine/engine';
 
-export const gameStore = new Store<GameState | null>(null);
+const STORAGE_KEY = 'mahjong-game-state';
+
+const loadState = (): GameState | null => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch (e) {
+    console.error('Failed to load game state from local storage', e);
+    return null;
+  }
+};
+
+export const gameStore = new Store<GameState | null>(loadState());
+
+gameStore.subscribe(() => {
+  const state = gameStore.state;
+  if (state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } else {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+});
 
 export const startGame = (playerNames: string[], baseScore: number, initialDealerIndex: number) => {
   const initialState = MahjongEngine.createInitialState(playerNames, baseScore, initialDealerIndex);
