@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useStore } from '@tanstack/react-store';
+import { useSelector } from '@tanstack/react-store';
 import { gameStore } from '../../store/game-store';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -12,7 +12,7 @@ import type { RoundResult } from '../../types/game';
 
 export function HistoryList() {
   const { t } = useTranslation();
-  const state = useStore(gameStore);
+  const state = useSelector(gameStore, (state) => state);
   const navigate = useNavigate();
   const [editingRound, setEditingRound] = useState<RoundResult | null>(null);
 
