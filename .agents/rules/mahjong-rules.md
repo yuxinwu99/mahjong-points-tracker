@@ -4,6 +4,8 @@ trigger: always_on
 
 # Jinjiang Mahjong Scoring Rules
 
+The instructions below describe the rules for Jinjiang mahjong. You are to always follow the rules when implementing any change to the calculation engine.
+
 ### 1. Base Score & Streaks
 *   **Starting Base**: 5 points (customizable at setup).
 *   **Streak (Lian Zhuang)**: Every consecutive win by a player doubles their personal base score:
