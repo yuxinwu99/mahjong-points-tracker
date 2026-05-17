@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useStore } from '@tanstack/react-store';
+import { useSelector } from '@tanstack/react-store';
 import { gameStore, resetGame } from '../../store/game-store';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
@@ -11,7 +11,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 export function GameDashboard() {
   const { t } = useTranslation();
-  const state = useStore(gameStore);
+  const state = useSelector(gameStore, (state) => state);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 

@@ -5,7 +5,7 @@ import { startGame } from '../store/game-store';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Card, CardContent } from '../components/ui/card';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 
 export const Route = createFileRoute('/setup')({
   component: SetupPage,
@@ -61,7 +61,11 @@ function SetupPage() {
             <form.Field
               name="initialDealer"
               children={(field) => (
-                <div className="space-y-2">
+                <RadioGroup 
+                  value={field.state.value.toString()} 
+                  onValueChange={(val) => field.handleChange(Number(val))}
+                  className="space-y-2 gap-0"
+                >
                   {form.state.values.players.map((_, i) => (
                     <div
                       key={i}
@@ -71,27 +75,28 @@ function SetupPage() {
                           : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50'
                       }`}
                     >
-                      <div 
+                      <Label 
+                        htmlFor={`dealer-${i}`}
                         className="flex items-center gap-3 cursor-pointer"
-                        onClick={() => field.handleChange(i)}
                       >
-                        <input
-                          type="radio"
-                          readOnly
-                          checked={field.state.value === i}
-                          className="w-5 h-5 accent-indigo-500 cursor-pointer"
+                        <RadioGroupItem
+                          value={i.toString()}
+                          id={`dealer-${i}`}
+                          className="data-[state=checked]:border-indigo-500 data-[state=checked]:text-indigo-500 cursor-pointer"
                         />
-                        <span className="text-xs font-bold text-slate-400 w-4 text-center">{i + 1}</span>
-                      </div>
+                        <span className="text-xs font-bold text-slate-400 w-4 text-center">
+                          {i + 1}
+                        </span>
+                      </Label>
                       
                       <form.Field
                         name={`players[${i}]` as any}
                         children={(playerField) => (
-                          <input
+                          <Input
                             placeholder={t('setup.player_placeholder', { index: i + 1 })}
                             value={playerField.state.value}
                             onChange={(e) => playerField.handleChange(e.target.value)}
-                            className="flex-1 bg-transparent border-none focus:ring-0 p-0 text-slate-900 dark:text-white font-semibold placeholder:text-slate-400"
+                            className="flex-1 bg-transparent border-none focus-visible:ring-0 shadow-none p-0 h-auto text-slate-900 dark:text-white font-semibold placeholder:text-slate-400 rounded-none"
                           />
                         )}
                       />
@@ -102,7 +107,7 @@ function SetupPage() {
                       )}
                     </div>
                   ))}
-                </div>
+                </RadioGroup>
               )}
             />
           </div>

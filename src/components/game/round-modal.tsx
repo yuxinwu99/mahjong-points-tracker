@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useStore } from '@tanstack/react-store';
+import { useSelector } from '@tanstack/react-store';
 import { gameStore, addRound } from '../../store/game-store';
 import { useForm } from '@tanstack/react-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
@@ -15,7 +15,7 @@ interface RoundModalProps {
 
 export function RoundModal({ isOpen, onClose }: RoundModalProps) {
   const { t } = useTranslation();
-  const state = useStore(gameStore);
+  const state = useSelector(gameStore, (state) => state);
 
   const form = useForm({
     defaultValues: {
