@@ -172,4 +172,66 @@ describe('MahjongEngine', () => {
       expect(deletedState.roundHistory[0].roundNum).toBe(1);
     });
   });
+
+  describe('Multiple Rounds Scenario', () => {
+    it('should correctly calculate state across a full multi-round game', () => {
+      let state = MahjongEngine.createInitialState(playerNames, baseScore, 0);
+
+      // Round 1: P0 (Dealer) Wins. Mult x1. Field: [5, 2, 0, 1]
+      state = MahjongEngine.nextState(state, 0, 1, [5, 2, 0, 1]);
+      expect(state.dealerIndex).toBe(0);
+      expect(state.players.map(p => p.streak)).toEqual([1, 0, 0, 0]);
+      expect(state.roundHistory[0].scoreChanges).toEqual([45, -12, -18, -15]);
+
+      // Round 2: P1 Wins. Mult x2. Field: [0, 10, 5, 2]
+      state = MahjongEngine.nextState(state, 1, 2, [0, 10, 5, 2]);
+      expect(state.dealerIndex).toBe(1);
+      expect(state.players.map(p => p.streak)).toEqual([0, 1, 0, 0]);
+      expect(state.roundHistory[1].scoreChanges).toEqual([-57, 90, -12, -21]);
+
+      // Round 3: P1 (Dealer) Wins. Mult x1. Field: [2, 5, 0, 0]
+      state = MahjongEngine.nextState(state, 1, 1, [2, 5, 0, 0]);
+      expect(state.dealerIndex).toBe(1);
+      expect(state.players.map(p => p.streak)).toEqual([0, 2, 0, 0]);
+      expect(state.roundHistory[2].scoreChanges).toEqual([-21, 75, -27, -27]);
+
+      // Verify total scores
+      const totals = state.players.map(p => p.history.reduce((a, b) => a + b, 0));
+      expect(totals).toEqual([-33, 153, -57, -63]);
+    });
+
+    it('should correctly calculate capping for dealer streak and subsequent loss', () => {
+      let state = MahjongEngine.createInitialState(playerNames, baseScore, 0);
+
+      // Round 1: P0 (Dealer) Wins (Streak 0 -> Base 10)
+      state = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]);
+      expect(state.players[0].streak).toBe(1);
+      expect(state.roundHistory[0].scoreChanges).toEqual([30, -10, -10, -10]);
+
+      // Round 2: P0 Wins again (Streak 1 -> Base 20)
+      state = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]);
+      expect(state.players[0].streak).toBe(2);
+      expect(state.roundHistory[1].scoreChanges).toEqual([60, -20, -20, -20]);
+
+      // Round 3: P0 Wins again (Streak 2 -> Base 40, Capped)
+      state = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]);
+      expect(state.players[0].streak).toBe(2); // Streak value is capped at 2 in engine
+      expect(state.roundHistory[2].scoreChanges).toEqual([120, -40, -40, -40]);
+
+      // Round 4: P1 Wins (P0 Loses, P0 pays their high base of 40)
+      // Base: P1=5 (non-dealer). Dealer P0 pays 40. P2 pays 5. P3 pays 5. P1 gets 50.
+      state = MahjongEngine.nextState(state, 1, 1, [0, 0, 0, 0]);
+      expect(state.dealerIndex).toBe(1); // Dealer rotates
+      expect(state.players.map(p => p.streak)).toEqual([0, 1, 0, 0]); // P0 resets, P1 goes to 1
+      expect(state.roundHistory[3].scoreChanges).toEqual([-40, 50, -5, -5]);
+
+      // Verify final totals
+      // P0: 30 + 60 + 120 - 40 = 170
+      // P1: -10 - 20 - 40 + 50 = -20
+      // P2: -10 - 20 - 40 - 5 = -75
+      // P3: -10 - 20 - 40 - 5 = -75
+      const totals = state.players.map(p => p.history.reduce((a, b) => a + b, 0));
+      expect(totals).toEqual([170, -20, -75, -75]);
+    });
+  });
 });
