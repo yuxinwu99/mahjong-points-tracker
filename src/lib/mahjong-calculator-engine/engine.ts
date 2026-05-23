@@ -1,4 +1,4 @@
-import type { RoundResult, GameState } from '../../types/game';
+import type { GameState, RoundResult } from "../../types/game";
 
 export class MahjongEngine {
   /**
@@ -8,12 +8,12 @@ export class MahjongEngine {
     const player = gameState.players[playerIndex];
     // Base progression: 5 -> 10 -> 20 (Capped at 2)
     let base = gameState.baseScore * Math.pow(2, Math.min(2, player.streak));
-    
+
     // Dealer doubles the base (10 -> 20 -> 40)
     if (playerIndex === gameState.dealerIndex) {
       base *= 2;
     }
-    
+
     return base;
   }
 
@@ -24,7 +24,7 @@ export class MahjongEngine {
     gameState: GameState,
     winnerIndex: number,
     multiplier: number,
-    fieldPoints: number[]
+    fieldPoints: number[],
   ): number[] {
     const tempChanges = [0, 0, 0, 0];
     const winnerBase = this.getPlayerBase(winnerIndex, gameState);
@@ -36,25 +36,25 @@ export class MahjongEngine {
 
       // Rule: Loser pays based on their own base if they are dealer,
       // otherwise they pay based on the winner's base.
-      const usedBase = (i === gameState.dealerIndex) ? dealerBase : winnerBase;
-      
+      const usedBase = i === gameState.dealerIndex ? dealerBase : winnerBase;
+
       // Payout = (UsedBase * Multiplier) + Winner's Field Points
-      const payout = (usedBase * multiplier) + fieldPoints[winnerIndex];
-      
+      const payout = usedBase * multiplier + fieldPoints[winnerIndex];
+
       tempChanges[winnerIndex] += payout;
       tempChanges[i] -= payout;
     }
 
     // 2. "Water" Transfer (Settlement among losers only)
-    const losers = [0, 1, 2, 3].filter(idx => idx !== winnerIndex);
+    const losers = [0, 1, 2, 3].filter((idx) => idx !== winnerIndex);
     for (let i = 0; i < losers.length; i++) {
       for (let j = i + 1; j < losers.length; j++) {
         const idxI = losers[i];
         const idxJ = losers[j];
-        
+
         // Base difference in field points
         const diff = fieldPoints[idxI] - fieldPoints[idxJ];
-        
+
         tempChanges[idxI] += diff;
         tempChanges[idxJ] -= diff;
       }
@@ -70,18 +70,23 @@ export class MahjongEngine {
     gameState: GameState,
     winnerIndex: number,
     multiplier: number,
-    fieldPoints: number[]
+    fieldPoints: number[],
   ): GameState {
-    const scoreChanges = this.calculateRoundChanges(gameState, winnerIndex, multiplier, fieldPoints);
-    
+    const scoreChanges = this.calculateRoundChanges(
+      gameState,
+      winnerIndex,
+      multiplier,
+      fieldPoints,
+    );
+
     const newPlayers = gameState.players.map((player, i) => {
       // Update streak: winner increments (max 2), others reset to 0
-      const newStreak = (i === winnerIndex) ? Math.min(2, player.streak + 1) : 0;
-      
+      const newStreak = i === winnerIndex ? Math.min(2, player.streak + 1) : 0;
+
       return {
         ...player,
         streak: newStreak,
-        history: [...player.history, scoreChanges[i]]
+        history: [...player.history, scoreChanges[i]],
       };
     });
 
@@ -92,7 +97,7 @@ export class MahjongEngine {
       multiplier,
       fieldPoints: [...fieldPoints],
       scoreChanges,
-      scoresAfter: newPlayers.map(p => p.history.reduce((a, b) => a + b, 0))
+      scoresAfter: newPlayers.map((p) => p.history.reduce((a, b) => a + b, 0)),
     };
 
     // Dealer stays if they win
@@ -108,19 +113,23 @@ export class MahjongEngine {
       lastWinnerIndex: winnerIndex,
       currentStreakCount: newPlayers[winnerIndex].streak,
       roundHistory: [...gameState.roundHistory, roundData],
-      roundNum: gameState.roundNum + 1
+      roundNum: gameState.roundNum + 1,
     };
   }
 
-  static createInitialState(playerNames: string[], baseScore: number, initialDealerIndex: number): GameState {
+  static createInitialState(
+    playerNames: string[],
+    baseScore: number,
+    initialDealerIndex: number,
+  ): GameState {
     return {
-      players: playerNames.map(name => ({ name, streak: 0, history: [] })),
+      players: playerNames.map((name) => ({ name, streak: 0, history: [] })),
       baseScore,
       dealerIndex: initialDealerIndex,
       lastWinnerIndex: null,
       currentStreakCount: 0,
       roundHistory: [],
-      roundNum: 1
+      roundNum: 1,
     };
   }
 
@@ -130,18 +139,28 @@ export class MahjongEngine {
   static recalculateState(
     gameState: GameState,
     targetRoundNum: number,
-    newData: { winnerIndex: number; multiplier: number; fieldPoints: number[] }
+    newData: { winnerIndex: number; multiplier: number; fieldPoints: number[] },
   ): GameState {
-    const playerNames = gameState.players.map(p => p.name);
-    const initialDealerIndex = gameState.roundHistory.length > 0 
-      ? gameState.roundHistory[0].dealerIndex 
-      : gameState.dealerIndex;
+    const playerNames = gameState.players.map((p) => p.name);
+    const initialDealerIndex =
+      gameState.roundHistory.length > 0
+        ? gameState.roundHistory[0].dealerIndex
+        : gameState.dealerIndex;
 
-    let currentState = this.createInitialState(playerNames, gameState.baseScore, initialDealerIndex);
+    let currentState = this.createInitialState(
+      playerNames,
+      gameState.baseScore,
+      initialDealerIndex,
+    );
 
     for (const round of gameState.roundHistory) {
       const data = round.roundNum === targetRoundNum ? newData : round;
-      currentState = this.nextState(currentState, data.winnerIndex, data.multiplier, data.fieldPoints);
+      currentState = this.nextState(
+        currentState,
+        data.winnerIndex,
+        data.multiplier,
+        data.fieldPoints,
+      );
     }
 
     return currentState;
@@ -151,16 +170,26 @@ export class MahjongEngine {
    * Deletes a round and recalculates subsequent state.
    */
   static deleteRound(gameState: GameState, targetRoundNum: number): GameState {
-    const playerNames = gameState.players.map(p => p.name);
-    const initialDealerIndex = gameState.roundHistory.length > 0 
-      ? gameState.roundHistory[0].dealerIndex 
-      : gameState.dealerIndex;
+    const playerNames = gameState.players.map((p) => p.name);
+    const initialDealerIndex =
+      gameState.roundHistory.length > 0
+        ? gameState.roundHistory[0].dealerIndex
+        : gameState.dealerIndex;
 
-    let currentState = this.createInitialState(playerNames, gameState.baseScore, initialDealerIndex);
+    let currentState = this.createInitialState(
+      playerNames,
+      gameState.baseScore,
+      initialDealerIndex,
+    );
 
     for (const round of gameState.roundHistory) {
       if (round.roundNum === targetRoundNum) continue;
-      currentState = this.nextState(currentState, round.winnerIndex, round.multiplier, round.fieldPoints);
+      currentState = this.nextState(
+        currentState,
+        round.winnerIndex,
+        round.multiplier,
+        round.fieldPoints,
+      );
     }
 
     return currentState;

@@ -1,13 +1,13 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import i18n from "i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
 
 const resources = {
   en: {
     translation: {
       common: {
         app_name: "Mahjong Points",
-        app_tracker: "Mahjong Tracker"
+        app_tracker: "Mahjong Tracker",
       },
       setup: {
         title: "New Game Setup",
@@ -16,7 +16,7 @@ const resources = {
         start_game: "Start Game",
         initial_dealer: "Initial Dealer",
         player_placeholder: "Player {{index}}",
-        order_disclaimer: "(Please arrange in order)"
+        order_disclaimer: "(Please arrange in order)",
       },
       game: {
         round: "ROUND",
@@ -32,29 +32,34 @@ const resources = {
         calculate: "Calculate",
         wins: "wins",
         lian: "Streak",
-        confirm_end: "Are you sure you want to end the session? All current scores will be lost.",
+        confirm_end:
+          "Are you sure you want to end the session? All current scores will be lost.",
         select_winner: "Please select a winner",
         edit_round: "Edit Round",
         save: "Save Changes",
         delete: "Delete Round",
-        confirm_delete: "Are you sure you want to delete this round? This will recalculate all subsequent rounds.",
+        confirm_delete:
+          "Are you sure you want to delete this round? This will recalculate all subsequent rounds.",
         score_change: "Score Change",
         field_points_short: "Field Points",
         total_score: "Total Score",
         no_history: "No history yet",
-        edit_disclaimer: "Only the most recent round can be edited to ensure point consistency."
+        edit_disclaimer:
+          "Only the most recent round can be edited to ensure point consistency.",
+        win_rate: "Win Rate",
       },
       pwa: {
         update_available: "New version available!",
-        update_now: "Update Now"
-      }
-    }
+        update_now: "Update Now",
+        install_app: "Install App",
+      },
+    },
   },
   zh: {
     translation: {
       common: {
         app_name: "麻将计分",
-        app_tracker: "麻将记分器"
+        app_tracker: "麻将记分器",
       },
       setup: {
         title: "新游戏设置",
@@ -63,7 +68,7 @@ const resources = {
         start_game: "开始游戏",
         initial_dealer: "初始庄家",
         player_placeholder: "玩家 {{index}}",
-        order_disclaimer: "(请按顺序排列)"
+        order_disclaimer: "(请按顺序排列)",
       },
       game: {
         round: "回合",
@@ -89,14 +94,16 @@ const resources = {
         field_points_short: "场上分数",
         total_score: "总得分",
         no_history: "暂无历史记录",
-        edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。"
+        edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。",
+        win_rate: "胜率",
       },
       pwa: {
         update_available: "有新版本可用！",
-        update_now: "立即更新"
-      }
-    }
-  }
+        update_now: "立即更新",
+        install_app: "安装应用",
+      },
+    },
+  },
 };
 
 i18n
@@ -104,15 +111,22 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    supportedLngs: ['en', 'zh'],
-    fallbackLng: 'en',
+    supportedLngs: ["en", "zh"],
+    fallbackLng: "en",
     detection: {
-      order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage', 'cookie'],
+      order: [
+        "querystring",
+        "cookie",
+        "localStorage",
+        "sessionStorage",
+        "navigator",
+        "htmlTag",
+      ],
+      caches: ["localStorage", "cookie"],
     },
     interpolation: {
-      escapeValue: false
-    }
+      escapeValue: false,
+    },
   });
 
 export default i18n;

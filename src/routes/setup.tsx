@@ -1,13 +1,13 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useTranslation } from 'react-i18next';
-import { useForm } from '@tanstack/react-form';
-import { startGame } from '../store/game-store';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { useForm } from "@tanstack/react-form";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import { startGame } from "../store/game-store";
 
-export const Route = createFileRoute('/setup')({
+export const Route = createFileRoute("/setup")({
   component: SetupPage,
 });
 
@@ -17,28 +17,35 @@ function SetupPage() {
 
   const form = useForm({
     defaultValues: {
-      players: ['', '', '', ''],
+      players: ["", "", "", ""],
       baseScore: 5,
       initialDealer: 0,
     },
     onSubmit: async ({ value }) => {
-      const names = value.players.map((name, i) => name.trim() || t('setup.player_placeholder', { index: i + 1 }));
+      const names = value.players.map(
+        (name, i) =>
+          name.trim() || t("setup.player_placeholder", { index: i + 1 }),
+      );
       startGame(names, value.baseScore, value.initialDealer);
-      navigate({ to: '/' });
+      navigate({ to: "/" });
     },
   });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-md mx-auto">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-          {t('common.app_tracker').includes('Mahjong') ? (
-            <>Mahjong<span className="text-indigo-500">Tracker</span></>
+    <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto max-w-md space-y-8 duration-500">
+      <div className="space-y-2 text-center">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase italic dark:text-white">
+          {t("common.app_tracker").includes("Mahjong") ? (
+            <>
+              Mahjong<span className="text-indigo-500">Tracker</span>
+            </>
           ) : (
-            t('common.app_tracker')
+            t("common.app_tracker")
           )}
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 font-medium">{t('setup.title')}</p>
+        <p className="font-medium text-slate-500 dark:text-slate-400">
+          {t("setup.title")}
+        </p>
       </div>
 
       <form
@@ -51,58 +58,64 @@ function SetupPage() {
       >
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              {t('setup.players')}
+            <Label className="text-sm font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+              {t("setup.players")}
             </Label>
-            <span className="text-xs text-slate-400 font-normal">{t('setup.order_disclaimer')}</span>
+            <span className="text-xs font-normal text-slate-400">
+              {t("setup.order_disclaimer")}
+            </span>
           </div>
 
           <div className="space-y-2">
             <form.Field
               name="initialDealer"
               children={(field) => (
-                <RadioGroup 
-                  value={field.state.value.toString()} 
+                <RadioGroup
+                  value={field.state.value.toString()}
                   onValueChange={(val) => field.handleChange(Number(val))}
-                  className="space-y-2 gap-0"
+                  className="gap-0 space-y-2"
                 >
                   {form.state.values.players.map((_, i) => (
                     <div
                       key={i}
-                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                      className={`flex items-center gap-3 rounded-xl border p-3 transition-all ${
                         field.state.value === i
-                          ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10'
-                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50'
+                          ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10"
+                          : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50"
                       }`}
                     >
-                      <Label 
+                      <Label
                         htmlFor={`dealer-${i}`}
-                        className="flex items-center gap-3 cursor-pointer"
+                        className="flex cursor-pointer items-center gap-3"
                       >
                         <RadioGroupItem
                           value={i.toString()}
                           id={`dealer-${i}`}
-                          className="data-[state=checked]:border-indigo-500 data-[state=checked]:text-indigo-500 cursor-pointer"
+                          className="cursor-pointer data-[state=checked]:border-indigo-500 data-[state=checked]:text-indigo-500"
                         />
-                        <span className="text-xs font-bold text-slate-400 w-4 text-center">
+                        <span className="w-4 text-center text-xs font-bold text-slate-400">
                           {i + 1}
                         </span>
                       </Label>
-                      
+
                       <form.Field
                         name={`players[${i}]` as any}
                         children={(playerField) => (
                           <Input
-                            placeholder={t('setup.player_placeholder', { index: i + 1 })}
+                            placeholder={t("setup.player_placeholder", {
+                              index: i + 1,
+                            })}
                             value={playerField.state.value}
-                            onChange={(e) => playerField.handleChange(e.target.value)}
-                            className="flex-1 bg-transparent border-none focus-visible:ring-0 shadow-none p-0 h-auto text-slate-900 dark:text-white font-semibold placeholder:text-slate-400 rounded-none"
+                            onChange={(e) =>
+                              playerField.handleChange(e.target.value)
+                            }
+                            className="h-auto flex-1 rounded-none border-none bg-transparent p-0 font-semibold text-slate-900 shadow-none placeholder:text-slate-400 focus-visible:ring-0 dark:text-white"
                           />
                         )}
                       />
                       {field.state.value === i && (
-                        <span className="text-xs font-black bg-indigo-500 text-white px-2 py-0.5 rounded tracking-tighter">
-                          {t('game.dealer')}
+                        <span className="rounded bg-indigo-500 px-2 py-0.5 text-xs font-black tracking-tighter text-white">
+                          {t("game.dealer")}
                         </span>
                       )}
                     </div>
@@ -114,8 +127,11 @@ function SetupPage() {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="baseScore" className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {t('setup.base_score')}
+          <Label
+            htmlFor="baseScore"
+            className="text-sm font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+          >
+            {t("setup.base_score")}
           </Label>
           <form.Field
             name="baseScore"
@@ -125,14 +141,17 @@ function SetupPage() {
                 type="number"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(Number(e.target.value))}
-                className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 h-12 text-lg font-bold text-slate-900 dark:text-white"
+                className="h-12 border-slate-200 bg-white text-lg font-bold text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />
             )}
           />
         </div>
 
-        <Button type="submit" className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg uppercase tracking-wide transition-all shadow-xl shadow-indigo-500/20 rounded-2xl">
-          {t('setup.start_game')}
+        <Button
+          type="submit"
+          className="h-14 w-full rounded-2xl bg-indigo-600 text-lg font-black tracking-wide text-white uppercase shadow-xl shadow-indigo-500/20 transition-all hover:bg-indigo-500"
+        >
+          {t("setup.start_game")}
         </Button>
       </form>
     </div>

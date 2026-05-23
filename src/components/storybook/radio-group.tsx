@@ -1,17 +1,17 @@
-import React from 'react'
+import React from "react";
 
 export interface RadioOption {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 export interface RadioGroupProps {
-  label: string
-  name: string
-  options: RadioOption[]
-  value?: string
-  onChange?: (value: string) => void
-  className?: string
+  label: string;
+  name: string;
+  options: RadioOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  className?: string;
 }
 
 export const RadioGroup: React.FC<RadioGroupProps> = ({
@@ -20,7 +20,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
   options,
   value,
   onChange,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
@@ -31,7 +31,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
         {options.map((option) => (
           <label
             key={option.value}
-            className="flex items-center gap-2 cursor-pointer group"
+            className="group flex cursor-pointer items-center gap-2"
           >
             <input
               type="radio"
@@ -39,14 +39,14 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
               value={option.value}
               checked={value === option.value}
               onChange={(e) => onChange?.(e.target.value)}
-              className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 cursor-pointer"
+              className="h-4 w-4 cursor-pointer border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:focus:ring-blue-400"
             />
-            <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
+            <span className="text-sm text-gray-700 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100">
               {option.label}
             </span>
           </label>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

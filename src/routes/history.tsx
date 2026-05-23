@@ -1,9 +1,9 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { useSelector } from '@tanstack/react-store';
-import { gameStore } from '../store/game-store';
-import { HistoryList } from '../components/history/history-list';
+import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { useSelector } from "@tanstack/react-store";
+import { HistoryList } from "../components/history/history-list";
+import { gameStore } from "../store/game-store";
 
-export const Route = createFileRoute('/history')({
+export const Route = createFileRoute("/history")({
   component: HistoryPage,
 });
 
