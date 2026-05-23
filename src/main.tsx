@@ -1,9 +1,9 @@
+import { QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "@tanstack/react-router";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { getRouter } from "./router";
 import { registerSW } from "virtual:pwa-register";
+import { getRouter } from "./router";
 import "./styles.css";
 
 registerSW({

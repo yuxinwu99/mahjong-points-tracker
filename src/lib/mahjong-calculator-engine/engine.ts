@@ -1,4 +1,4 @@
-import type { RoundResult, GameState } from "../../types/game";
+import type { GameState, RoundResult } from "../../types/game";
 
 export class MahjongEngine {
   /**

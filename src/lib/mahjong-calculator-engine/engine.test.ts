@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { MahjongEngine } from "./engine";
+import { describe, expect, it } from "vitest";
 import type { GameState } from "../../types/game";
+import { MahjongEngine } from "./engine";
 
 describe("MahjongEngine", () => {
   const playerNames = ["P1", "P2", "P3", "P4"];

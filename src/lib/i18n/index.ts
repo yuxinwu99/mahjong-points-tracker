@@ -1,6 +1,6 @@
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
 
 const resources = {
   en: {
@@ -46,6 +46,7 @@ const resources = {
         no_history: "No history yet",
         edit_disclaimer:
           "Only the most recent round can be edited to ensure point consistency.",
+        win_rate: "Win Rate",
       },
       pwa: {
         update_available: "New version available!",
@@ -94,6 +95,7 @@ const resources = {
         total_score: "总得分",
         no_history: "暂无历史记录",
         edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。",
+        win_rate: "胜率",
       },
       pwa: {
         update_available: "有新版本可用！",

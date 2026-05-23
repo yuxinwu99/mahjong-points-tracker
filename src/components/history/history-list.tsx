@@ -21,7 +21,7 @@ export function HistoryList() {
   const reversedHistory = [...state.roundHistory].reverse();
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+    <div className="animate-in fade-in slide-in-from-left-4 space-y-6 duration-500">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
@@ -29,46 +29,46 @@ export function HistoryList() {
           onClick={() => navigate({ to: "/" })}
           className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800"
         >
-          <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+          <ArrowLeft className="h-5 w-5 text-slate-600 dark:text-slate-400" />
         </Button>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
           {t("game.history")}
         </h2>
       </div>
 
-      <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-3 rounded-xl">
-        <p className="text-xs text-slate-500 dark:text-slate-400 italic">
+      <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+        <p className="text-xs text-slate-500 italic dark:text-slate-400">
           {t("game.edit_disclaimer")}
         </p>
       </div>
 
       <div className="space-y-4">
         {reversedHistory.length === 0 ? (
-          <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+          <div className="py-12 text-center text-slate-500 dark:text-slate-400">
             {t("game.no_history")}
           </div>
         ) : (
           reversedHistory.map((round, idx) => (
             <Card
               key={round.roundNum}
-              className="border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm"
+              className="border-slate-200 bg-white/40 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/40"
             >
-              <CardContent className="p-4 space-y-4">
-                <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+              <CardContent className="space-y-4 p-4">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-indigo-600 dark:text-indigo-400">
                       {t("game.round")} {round.roundNum}
                     </span>
                     <Badge
                       variant="outline"
-                      className="text-xs uppercase border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                      className="border-slate-300 text-xs text-slate-600 uppercase dark:border-slate-700 dark:text-slate-400"
                     >
                       x{round.multiplier}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-slate-500 dark:text-slate-400">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
                         {state.players[round.winnerIndex].name}
                       </span>{" "}
                       {t("game.wins")}
@@ -77,10 +77,10 @@ export function HistoryList() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="w-8 h-8 rounded-full text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                        className="h-8 w-8 rounded-full text-slate-400 hover:bg-indigo-50 hover:text-indigo-500 dark:hover:bg-indigo-900/20"
                         onClick={() => setEditingRound(round)}
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="h-4 w-4" />
                       </Button>
                     )}
                   </div>
@@ -88,12 +88,12 @@ export function HistoryList() {
 
                 <div className="space-y-4">
                   {/* Players Header Row */}
-                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center">
+                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] items-center gap-2">
                     <div />
                     {state.players.map((p, pIdx) => (
                       <div
                         key={pIdx}
-                        className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase text-center truncate"
+                        className="truncate text-center text-xs font-bold text-slate-400 uppercase dark:text-slate-500"
                       >
                         {p.name}
                       </div>
@@ -101,14 +101,14 @@ export function HistoryList() {
                   </div>
 
                   {/* Score Change Row */}
-                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-800/50">
-                    <div className="text-xs font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
+                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] items-center gap-2 border-b border-slate-100 py-2 dark:border-slate-800/50">
+                    <div className="text-xs font-black tracking-tighter text-slate-400 uppercase dark:text-slate-600">
                       {t("game.score_change")}
                     </div>
                     {round.scoreChanges.map((change, pIdx) => (
                       <div
                         key={pIdx}
-                        className={`text-sm font-black text-center ${change > 0 ? "text-emerald-500" : change < 0 ? "text-red-500" : "text-slate-300"}`}
+                        className={`text-center text-sm font-black ${change > 0 ? "text-emerald-500" : change < 0 ? "text-red-500" : "text-slate-300"}`}
                       >
                         {change > 0 ? "+" : ""}
                         {change}
@@ -117,14 +117,14 @@ export function HistoryList() {
                   </div>
 
                   {/* Field Points Row */}
-                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-800/50">
-                    <div className="text-xs font-black text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
+                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] items-center gap-2 border-b border-slate-100 py-2 dark:border-slate-800/50">
+                    <div className="text-xs font-black tracking-tighter text-slate-400 uppercase dark:text-slate-600">
                       {t("game.field_points_short")}
                     </div>
                     {round.fieldPoints.map((pts, pIdx) => (
                       <div
                         key={pIdx}
-                        className="text-sm font-bold text-center text-slate-600 dark:text-slate-400"
+                        className="text-center text-sm font-bold text-slate-600 dark:text-slate-400"
                       >
                         {pts}
                       </div>
@@ -132,14 +132,14 @@ export function HistoryList() {
                   </div>
 
                   {/* Total Score Row */}
-                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] gap-2 items-center py-2">
-                    <div className="text-xs font-black text-indigo-400 dark:text-indigo-600 uppercase tracking-tighter">
+                  <div className="grid grid-cols-[100px_1fr_1fr_1fr_1fr] items-center gap-2 py-2">
+                    <div className="text-xs font-black tracking-tighter text-indigo-400 uppercase dark:text-indigo-600">
                       {t("game.total_score")}
                     </div>
                     {round.scoresAfter.map((total, pIdx) => (
                       <div
                         key={pIdx}
-                        className="text-sm font-black text-center text-slate-900 dark:text-white"
+                        className="text-center text-sm font-black text-slate-900 dark:text-white"
                       >
                         {total}
                       </div>
