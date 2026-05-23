@@ -1,9 +1,9 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { useSelector } from '@tanstack/react-store';
-import { gameStore } from '../store/game-store';
-import { GameDashboard } from '../components/game/game-dashboard';
+import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { useSelector } from "@tanstack/react-store";
+import { gameStore } from "../store/game-store";
+import { GameDashboard } from "../components/game/game-dashboard";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
