@@ -210,17 +210,21 @@ describe("MahjongEngine", () => {
       expect(state.roundHistory[1].scoreChanges).toEqual([-57, 90, -12, -21]);
 
       // Round 3: P1 (Dealer) Wins. Mult x1. Field: [2, 5, 0, 0]
-      // P1 is now dealer and wins, so streak increments
+      // P1 is now dealer and wins, so streak increments to 1 (base is 10: 5*2*2^0)
       state = MahjongEngine.nextState(state, 1, 1, [2, 5, 0, 0]);
       expect(state.dealerIndex).toBe(1);
       expect(state.players.map((p) => p.streak)).toEqual([0, 1, 0, 0]);
-      expect(state.roundHistory[2].scoreChanges).toEqual([-21, 75, -27, -27]);
+      // Base calculation: P1 is dealer with streak 0 = base 10. Others pay 5.
+      // Payouts: P0 pays 10 + 5 = 15, P2 pays 5 + 5 = 10, P3 pays 5 + 5 = 10. Winner gets +35
+      // Water between losers: P0(2) vs P2(0): P0 +2, P2 -2. P0(2) vs P3(0): P0 +2, P3 -2. P2(0) vs P3(0): 0
+      // Total: P0: -15 + 4 = -11, P1: +35, P2: -10 - 2 = -12, P3: -10 - 2 = -12
+      expect(state.roundHistory[2].scoreChanges).toEqual([-11, 35, -12, -12]);
 
       // Verify total scores
       const totals = state.players.map((p) =>
         p.history.reduce((a, b) => a + b, 0),
       );
-      expect(totals).toEqual([-33, 153, -57, -63]);
+      expect(totals).toEqual([17, 113, -40, -90]);
     });
 
     it("should correctly calculate capping for dealer streak and subsequent loss", () => {
