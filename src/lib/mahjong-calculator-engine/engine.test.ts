@@ -165,7 +165,7 @@ describe("MahjongEngine", () => {
       });
 
       // In new Round 1: P1 wins, Dealer moves to P1.
-      // So in Round 2, P1 is the Dealer.
+      // So in Round 2, P1 is the Dealer and wins.
       expect(editedState.roundHistory[0].winnerIndex).toBe(1);
       expect(editedState.roundHistory[1].dealerIndex).toBe(1);
       // P0 won Round 2 but is not the dealer, so streak should be 0
@@ -204,20 +204,21 @@ describe("MahjongEngine", () => {
 
       // Round 2: P1 Wins. Mult x2. Field: [0, 10, 5, 2]
       // P1 wins but is not dealer (P0 is), so P1 streak stays 0
+      // P0 lost so P0 streak resets to 0
       state = MahjongEngine.nextState(state, 1, 2, [0, 10, 5, 2]);
       expect(state.dealerIndex).toBe(1); // Dealer rotates to P1
-      expect(state.players.map((p) => p.streak)).toEqual([0, 0, 0, 0]); // All streaks reset (dealer rotation, P1 wasn't dealer when they won)
+      expect(state.players.map((p) => p.streak)).toEqual([0, 0, 0, 0]); // All streaks reset
       expect(state.roundHistory[1].scoreChanges).toEqual([-57, 90, -12, -21]);
 
       // Round 3: P1 (Dealer) Wins. Mult x1. Field: [2, 5, 0, 0]
-      // P1 is now dealer and wins, so streak increments to 1 (base is 10: 5*2*2^0)
+      // P1 is now dealer with streak 0 = base 10
+      // P0 pays 10 + 5 = 15, P2 pays 5 + 5 = 10, P3 pays 5 + 5 = 10
+      // Winner gets 15 + 10 + 10 = 35
+      // Water: P0(2) - P2(0) = 2, P0(2) - P3(0) = 2, P2(0) - P3(0) = 0
+      // P0: -15 + 2 + 2 = -11, P1: +35, P2: -10 - 2 = -12, P3: -10 - 2 = -12
       state = MahjongEngine.nextState(state, 1, 1, [2, 5, 0, 0]);
       expect(state.dealerIndex).toBe(1);
       expect(state.players.map((p) => p.streak)).toEqual([0, 1, 0, 0]);
-      // Base calculation: P1 is dealer with streak 0 = base 10. Others pay 5.
-      // Payouts: P0 pays 10 + 5 = 15, P2 pays 5 + 5 = 10, P3 pays 5 + 5 = 10. Winner gets +35
-      // Water between losers: P0(2) vs P2(0): P0 +2, P2 -2. P0(2) vs P3(0): P0 +2, P3 -2. P2(0) vs P3(0): 0
-      // Total: P0: -15 + 4 = -11, P1: +35, P2: -10 - 2 = -12, P3: -10 - 2 = -12
       expect(state.roundHistory[2].scoreChanges).toEqual([-11, 35, -12, -12]);
 
       // Verify total scores
