@@ -79,11 +79,31 @@ export class MahjongEngine {
       fieldPoints,
     );
 
+    // Determine new dealer before updating streaks
+    let newDealerIndex = gameState.dealerIndex;
+    if (winnerIndex !== gameState.dealerIndex) {
+      newDealerIndex = (gameState.dealerIndex + 1) % 4;
+    }
+
     const newPlayers = gameState.players.map((player, i) => {
-      // Update streak: only increment if winner is the dealer
+      // Update streak: only increment if this player is the dealer AND they won
       const isWinner = i === winnerIndex;
       const isDealer = i === gameState.dealerIndex;
-      const newStreak = isWinner && isDealer ? Math.min(2, player.streak + 1) : 0;
+      let newStreak: number;
+
+      if (isWinner && isDealer) {
+        // Dealer won: increment their streak (capped at 2)
+        newStreak = Math.min(2, player.streak + 1);
+      } else if (i === newDealerIndex && i !== gameState.dealerIndex) {
+        // This player is the NEW dealer (dealer changed hands): start with streak 0
+        newStreak = 0;
+      } else if (i !== newDealerIndex) {
+        // This player is not the dealer: streak is 0
+        newStreak = 0;
+      } else {
+        // This player is still the dealer but didn't win: streak is 0
+        newStreak = 0;
+      }
 
       return {
         ...player,
@@ -101,12 +121,6 @@ export class MahjongEngine {
       scoreChanges,
       scoresAfter: newPlayers.map((p) => p.history.reduce((a, b) => a + b, 0)),
     };
-
-    // Dealer stays if they win
-    let newDealerIndex = gameState.dealerIndex;
-    if (winnerIndex !== gameState.dealerIndex) {
-      newDealerIndex = (gameState.dealerIndex + 1) % 4;
-    }
 
     return {
       ...gameState,
