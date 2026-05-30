@@ -7,11 +7,11 @@ export class MahjongEngine {
   static getPlayerBase(playerIndex: number, gameState: GameState): number {
     const player = gameState.players[playerIndex];
     // Base progression: 5 -> 10 -> 20 (Capped at 2)
-    let base = gameState.baseScore * Math.pow(2, Math.min(2, player.streak));
+    let base = gameState.baseScore;
 
     // Dealer doubles the base (10 -> 20 -> 40)
     if (playerIndex === gameState.dealerIndex) {
-      base *= 2;
+      base = base * 2 * Math.pow(2, Math.min(2, player.streak));
     }
 
     return base;
