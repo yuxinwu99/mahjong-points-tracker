@@ -65,6 +65,9 @@ export function HistoryList() {
                     >
                       x{round.multiplier}
                     </Badge>
+                    <Badge className="h-4 border-none bg-indigo-500 px-1.5 py-0 text-xs leading-4 font-black text-white">
+                      {t("game.dealer")}: {state.players[round.dealerIndex].name}
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-slate-500 dark:text-slate-400">
