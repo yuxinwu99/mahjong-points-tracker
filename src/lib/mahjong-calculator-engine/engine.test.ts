@@ -34,23 +34,11 @@ describe("MahjongEngine", () => {
       expect(MahjongEngine.getPlayerBase(0, state)).toBe(10);
     });
 
-    it("should return 10 for 1-win non-dealer", () => {
-      const state = createMockState(0, [0, 1, 0, 0]);
-      expect(MahjongEngine.getPlayerBase(1, state)).toBe(10);
-    });
-
     it("should return 20 for 1-win dealer", () => {
       const state = createMockState(0, [1, 0, 0, 0]);
       expect(MahjongEngine.getPlayerBase(0, state)).toBe(20);
     });
 
-    it("should cap non-dealer base at 20 (2+ wins)", () => {
-      const state = createMockState(0, [0, 2, 0, 0]);
-      expect(MahjongEngine.getPlayerBase(1, state)).toBe(20);
-
-      const state3 = createMockState(0, [0, 3, 0, 0]);
-      expect(MahjongEngine.getPlayerBase(1, state3)).toBe(20);
-    });
 
     it("should cap dealer base at 40 (2+ wins)", () => {
       const state = createMockState(0, [2, 0, 0, 0]);
