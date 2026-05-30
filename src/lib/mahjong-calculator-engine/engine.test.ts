@@ -126,15 +126,15 @@ describe("MahjongEngine", () => {
       const state = MahjongEngine.createInitialState(playerNames, baseScore, 0);
       const next = MahjongEngine.nextState(state, 1, 1, [0, 0, 0, 0]);
       expect(next.dealerIndex).toBe(1);
-      expect(next.players[0].streak).toBe(0);
-      expect(next.players[1].streak).toBe(1);
+      expect(next.players[0].streak).toBe(0); // P0 lost, streak resets
+      expect(next.players[1].streak).toBe(0); // P1 won but is not dealer yet, streak stays 0
     });
 
     it("should retain dealer when dealer wins", () => {
       const state = MahjongEngine.createInitialState(playerNames, baseScore, 0);
       const next = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]);
       expect(next.dealerIndex).toBe(0);
-      expect(next.players[0].streak).toBe(1);
+      expect(next.players[0].streak).toBe(1); // P0 is dealer and won, streak increments
     });
 
     it("should update history and roundNum", () => {
@@ -168,14 +168,16 @@ describe("MahjongEngine", () => {
       // So in Round 2, P1 is the Dealer.
       expect(editedState.roundHistory[0].winnerIndex).toBe(1);
       expect(editedState.roundHistory[1].dealerIndex).toBe(1);
-      // P0's streak after Round 2 should be 1 because they lost Round 1 but won Round 2
-      expect(editedState.players[0].streak).toBe(1);
+      // P0 won Round 2 but is not the dealer, so streak should be 0
+      expect(editedState.players[0].streak).toBe(0);
+      // P1 is dealer in Round 2 and won, so streak should be 1
+      expect(editedState.players[1].streak).toBe(1);
     });
 
     it("deleteRound should shift subsequent state", () => {
       let state = MahjongEngine.createInitialState(playerNames, baseScore, 0);
-      state = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]); // R1: P0 wins
-      state = MahjongEngine.nextState(state, 1, 1, [0, 0, 0, 0]); // R2: P1 wins
+      state = MahjongEngine.nextState(state, 0, 1, [0, 0, 0, 0]); // R1: P0 (dealer) wins
+      state = MahjongEngine.nextState(state, 1, 1, [0, 0, 0, 0]); // R2: P1 wins (dealer rotates to P1)
 
       // Delete R1
       const deletedState = MahjongEngine.deleteRound(state, 1);
@@ -185,6 +187,8 @@ describe("MahjongEngine", () => {
       // It should have started with P0 as dealer
       expect(deletedState.roundHistory[0].dealerIndex).toBe(0);
       expect(deletedState.roundHistory[0].roundNum).toBe(1);
+      // P1 won but is not dealer in this recalculated round, so streak is 0
+      expect(deletedState.players[1].streak).toBe(0);
     });
   });
 
@@ -199,15 +203,17 @@ describe("MahjongEngine", () => {
       expect(state.roundHistory[0].scoreChanges).toEqual([45, -12, -18, -15]);
 
       // Round 2: P1 Wins. Mult x2. Field: [0, 10, 5, 2]
+      // P1 wins but is not dealer (P0 is), so P1 streak stays 0
       state = MahjongEngine.nextState(state, 1, 2, [0, 10, 5, 2]);
-      expect(state.dealerIndex).toBe(1);
-      expect(state.players.map((p) => p.streak)).toEqual([0, 1, 0, 0]);
+      expect(state.dealerIndex).toBe(1); // Dealer rotates to P1
+      expect(state.players.map((p) => p.streak)).toEqual([0, 0, 0, 0]); // All streaks reset (dealer rotation, P1 wasn't dealer when they won)
       expect(state.roundHistory[1].scoreChanges).toEqual([-57, 90, -12, -21]);
 
       // Round 3: P1 (Dealer) Wins. Mult x1. Field: [2, 5, 0, 0]
+      // P1 is now dealer and wins, so streak increments
       state = MahjongEngine.nextState(state, 1, 1, [2, 5, 0, 0]);
       expect(state.dealerIndex).toBe(1);
-      expect(state.players.map((p) => p.streak)).toEqual([0, 2, 0, 0]);
+      expect(state.players.map((p) => p.streak)).toEqual([0, 1, 0, 0]);
       expect(state.roundHistory[2].scoreChanges).toEqual([-21, 75, -27, -27]);
 
       // Verify total scores
@@ -239,7 +245,7 @@ describe("MahjongEngine", () => {
       // Base: P1=5 (non-dealer). Dealer P0 pays 40. P2 pays 5. P3 pays 5. P1 gets 50.
       state = MahjongEngine.nextState(state, 1, 1, [0, 0, 0, 0]);
       expect(state.dealerIndex).toBe(1); // Dealer rotates
-      expect(state.players.map((p) => p.streak)).toEqual([0, 1, 0, 0]); // P0 resets, P1 goes to 1
+      expect(state.players.map((p) => p.streak)).toEqual([0, 0, 0, 0]); // P0 resets, P1 is now dealer but just became it (streak 0)
       expect(state.roundHistory[3].scoreChanges).toEqual([-40, 50, -5, -5]);
 
       // Verify final totals
