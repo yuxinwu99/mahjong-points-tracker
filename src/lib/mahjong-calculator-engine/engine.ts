@@ -80,8 +80,10 @@ export class MahjongEngine {
     );
 
     const newPlayers = gameState.players.map((player, i) => {
-      // Update streak: winner increments (max 2), others reset to 0
-      const newStreak = i === winnerIndex ? Math.min(2, player.streak + 1) : 0;
+      // Update streak: only increment if winner is the dealer
+      const isWinner = i === winnerIndex;
+      const isDealer = i === gameState.dealerIndex;
+      const newStreak = isWinner && isDealer ? Math.min(2, player.streak + 1) : 0;
 
       return {
         ...player,
