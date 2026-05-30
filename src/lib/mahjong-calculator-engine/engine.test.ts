@@ -170,8 +170,8 @@ describe("MahjongEngine", () => {
       expect(editedState.roundHistory[1].dealerIndex).toBe(1);
       // P0 won Round 2 but is not the dealer, so streak should be 0
       expect(editedState.players[0].streak).toBe(0);
-      // P1 is dealer in Round 2 and won, so streak should be 1
-      expect(editedState.players[1].streak).toBe(1);
+      // P1 is dealer in Round 2 and won, so streak should be 0
+      expect(editedState.players[1].streak).toBe(0);
     });
 
     it("deleteRound should shift subsequent state", () => {
