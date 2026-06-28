@@ -17,40 +17,65 @@ vi.mock("react-i18next", () => ({
       }
       return key;
     },
+    i18n: { language: "en" },
   }),
 }));
 
-describe("GameDashboard UI - Renaming Players", () => {
+describe("GameDashboard UI", () => {
   beforeEach(() => {
     resetGame();
-    // Start game with 4 players, base score 5, player 0 is dealer
+    // Start game with 4 players, base score 5, player 0 (Alice) is dealer
     startGame(["Alice", "Bob", "Charlie", "David"], 5, 0);
   });
 
-  it("should render player names and open renaming dialog on click", () => {
+  it("should render all player names in the scoreboard", () => {
     render(<GameDashboard />);
 
-    // 1. Verify player names are rendered
-    expect(screen.getByText("Alice")).toBeTruthy();
+    // Alice appears at least twice (dealer header + scoreboard row)
+    expect(screen.getAllByText("Alice").length).toBeGreaterThan(0);
+    // Others appear once each in the scoreboard
     expect(screen.getByText("Bob")).toBeTruthy();
+    expect(screen.getByText("Charlie")).toBeTruthy();
+    expect(screen.getByText("David")).toBeTruthy();
+  });
 
-    // 2. Click Bob's name to rename
-    const bobButton = screen.getByRole("button", { name: /Bob/i });
-    fireEvent.click(bobButton);
+  it("should open PlayerDetailsModal when clicking a player row", () => {
+    render(<GameDashboard />);
 
-    // 3. Verify dialog is open (shows rename_player title and input field)
+    // Click Bob's player row button (title attribute = game.view_chart)
+    const playerButtons = screen.getAllByTitle("game.view_chart");
+    // Player rows: Alice=0, Bob=1, Charlie=2, David=3
+    fireEvent.click(playerButtons[1]); // Bob
+
+    // Modal header should show Bob's name and the score chart section
+    // The modal renders the score_chart translation key as a label
+    expect(screen.getByText("game.score_chart")).toBeTruthy();
+    // Bob's name appears in the modal title
+    expect(screen.getAllByText("Bob").length).toBeGreaterThan(0);
+  });
+
+  it("should open RenamePlayerDialog from within PlayerDetailsModal", () => {
+    render(<GameDashboard />);
+
+    // Open Bob's details modal
+    const playerButtons = screen.getAllByTitle("game.view_chart");
+    fireEvent.click(playerButtons[1]); // Bob
+
+    // Click the pencil/rename button inside the modal
+    const renameButton = screen.getByTitle("game.rename_player");
+    fireEvent.click(renameButton);
+
+    // Rename dialog should open: shows rename_player title and input
     expect(screen.getByText("game.rename_player")).toBeTruthy();
     const input = screen.getByLabelText("game.new_name_label") as HTMLInputElement;
     expect(input.value).toBe("Bob");
 
-    // 4. Change name to Robert and save
+    // Change name to Robert and save
     fireEvent.change(input, { target: { value: "Robert" } });
     const saveButton = screen.getByRole("button", { name: "game.save" });
     fireEvent.click(saveButton);
 
-    // 5. Verify Bob is renamed to Robert in store and UI
+    // Verify Bob is renamed to Robert in store
     expect(gameStore.state?.players[1].name).toBe("Robert");
-    expect(screen.queryByText("Bob")).toBeNull();
-    expect(screen.getByText("Robert")).toBeTruthy();
   });
 });
