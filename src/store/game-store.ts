@@ -6,6 +6,7 @@ const STORAGE_KEY = "mahjong-game-state";
 
 const loadState = (): GameState | null => {
   try {
+    if (typeof localStorage === "undefined") return null;
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : null;
   } catch (e) {
@@ -18,6 +19,7 @@ export const gameStore = new Store<GameState | null>(loadState());
 
 gameStore.subscribe(() => {
   const state = gameStore.state;
+  if (typeof localStorage === "undefined") return;
   if (state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } else {
@@ -75,3 +77,17 @@ export const deleteRound = (roundNum: number) => {
 export const resetGame = () => {
   gameStore.setState(() => null);
 };
+
+export const renamePlayer = (playerIndex: number, newName: string) => {
+  gameStore.setState((state) => {
+    if (!state) return null;
+    if (playerIndex < 0 || playerIndex >= state.players.length) return state;
+    return {
+      ...state,
+      players: state.players.map((player, i) =>
+        i === playerIndex ? { ...player, name: newName.trim() } : player,
+      ),
+    };
+  });
+};
+

@@ -6,12 +6,14 @@ import { useTranslation } from "react-i18next";
 import { gameStore, resetGame } from "../../store/game-store";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { PlayerDetailsModal } from "./player-details-modal";
 import { RoundModal } from "./round-modal";
 
 export function GameDashboard() {
   const { t } = useTranslation();
   const state = useSelector(gameStore, (s) => s);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(null);
   const navigate = useNavigate();
 
   if (!state) return null;
@@ -65,16 +67,22 @@ export function GameDashboard() {
               totalRounds > 0 ? Math.round((winCount / totalRounds) * 100) : 0;
 
             return (
-              <div
+              <button
                 key={i}
-                className={`flex items-center justify-between p-6 transition-colors ${
+                onClick={() => setSelectedPlayerIndex(i)}
+                className={`flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-slate-800/50 dark:active:bg-slate-800 ${
                   isDealer ? "bg-indigo-50/30 dark:bg-indigo-500/5" : ""
                 }`}
+                title={t("game.view_chart")}
               >
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-3">
                     <span
-                      className={`text-sm font-black ${isDealer ? "text-indigo-500" : "text-slate-400"}`}
+                      className={`text-sm font-black ${
+                        isDealer
+                          ? "text-indigo-500"
+                          : "text-slate-700 dark:text-slate-300"
+                      }`}
                     >
                       {player.name}
                     </span>
@@ -99,7 +107,7 @@ export function GameDashboard() {
                 >
                   {points}
                 </span>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -134,6 +142,11 @@ export function GameDashboard() {
       </div>
 
       <RoundModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <PlayerDetailsModal
+        playerIndex={selectedPlayerIndex}
+        isOpen={selectedPlayerIndex !== null}
+        onClose={() => setSelectedPlayerIndex(null)}
+      />
     </div>
   );
 }

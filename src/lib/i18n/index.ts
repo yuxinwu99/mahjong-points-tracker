@@ -47,6 +47,14 @@ const resources = {
         edit_disclaimer:
           "Only the most recent round can be edited to ensure point consistency.",
         win_rate: "Win Rate",
+        rename_player: "Rename Player",
+        new_name_label: "New Name",
+        score_chart: "Score Progression",
+        no_chart_data:
+          "No rounds played yet. Complete a round to view the score progression graph.",
+        round_label: "R{{num}}",
+        cumulative_score: "Score",
+        view_chart: "View Score Chart",
       },
       pwa: {
         update_available: "New version available!",
@@ -96,6 +104,13 @@ const resources = {
         no_history: "暂无历史记录",
         edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。",
         win_rate: "胜率",
+        rename_player: "重命名玩家",
+        new_name_label: "新名字",
+        score_chart: "分数走势图",
+        no_chart_data: "暂无回合数据。结束一个回合后即可查看分数走势图。",
+        round_label: "第{{num}}局",
+        cumulative_score: "总分",
+        view_chart: "查看走势图",
       },
       pwa: {
         update_available: "有新版本可用！",
