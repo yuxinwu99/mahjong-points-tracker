@@ -1,17 +1,19 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useSelector } from "@tanstack/react-store";
-import { History, LogOut } from "lucide-react";
+import { Edit2, History, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { gameStore, resetGame } from "../../store/game-store";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { RenamePlayerDialog } from "./rename-player-dialog";
 import { RoundModal } from "./round-modal";
 
 export function GameDashboard() {
   const { t } = useTranslation();
   const state = useSelector(gameStore, (s) => s);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [renamingIndex, setRenamingIndex] = useState<number | null>(null);
   const navigate = useNavigate();
 
   if (!state) return null;
@@ -73,11 +75,22 @@ export function GameDashboard() {
               >
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-3">
-                    <span
-                      className={`text-sm font-black ${isDealer ? "text-indigo-500" : "text-slate-400"}`}
+                    <button
+                      onClick={() => setRenamingIndex(i)}
+                      className="group flex items-center gap-1.5 rounded-lg px-2 py-1 -ml-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:outline-indigo-500 focus-visible:outline-2 cursor-pointer"
+                      title={t("game.rename_player")}
                     >
-                      {player.name}
-                    </span>
+                      <span
+                        className={`text-sm font-black ${
+                          isDealer
+                            ? "text-indigo-500"
+                            : "text-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        {player.name}
+                      </span>
+                      <Edit2 className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 text-slate-400 dark:text-slate-500 transition-all transform scale-90 group-hover:scale-100" />
+                    </button>
                     {isDealer && (
                       <Badge className="h-4 border-none bg-indigo-500 px-1.5 py-0 text-xs leading-4 font-black text-white">
                         {t("game.dealer")}
@@ -134,6 +147,12 @@ export function GameDashboard() {
       </div>
 
       <RoundModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <RenamePlayerDialog
+        playerIndex={renamingIndex ?? 0}
+        currentName={renamingIndex !== null ? state.players[renamingIndex].name : ""}
+        isOpen={renamingIndex !== null}
+        onClose={() => setRenamingIndex(null)}
+      />
     </div>
   );
 }

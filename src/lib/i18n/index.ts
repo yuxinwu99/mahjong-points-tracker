@@ -47,6 +47,8 @@ const resources = {
         edit_disclaimer:
           "Only the most recent round can be edited to ensure point consistency.",
         win_rate: "Win Rate",
+        rename_player: "Rename Player",
+        new_name_label: "New Name",
       },
       pwa: {
         update_available: "New version available!",
@@ -96,6 +98,8 @@ const resources = {
         no_history: "暂无历史记录",
         edit_disclaimer: "为了确保分数一致性，只能编辑最新的一回合。",
         win_rate: "胜率",
+        rename_player: "重命名玩家",
+        new_name_label: "新名字",
       },
       pwa: {
         update_available: "有新版本可用！",
