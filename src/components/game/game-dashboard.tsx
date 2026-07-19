@@ -43,10 +43,10 @@ export function GameDashboard() {
           <span className="max-w-full truncate text-xl font-black text-slate-900 dark:text-white">
             {state.players[state.dealerIndex].name}
           </span>
-          {state.currentStreakCount > 1 && (
+          {state.currentStreakCount > 0 && (
             <div className="absolute -top-2 -right-2">
               <Badge className="border-none bg-emerald-500 px-2 text-xs font-black text-white shadow-lg">
-                {t("game.lian")} {state.currentStreakCount - 1}
+                {t("game.lian")} {state.currentStreakCount}
               </Badge>
             </div>
           )}
