@@ -47,6 +47,91 @@ describe("MahjongEngine", () => {
       const state3 = createMockState(0, [3, 0, 0, 0]);
       expect(MahjongEngine.getPlayerBase(0, state3)).toBe(40);
     });
+
+    it("should handle custom cap at 90", () => {
+      const createMockStateWithCap = (
+        dealerIndex: number,
+        streaks: number[],
+        streakCap: number | null,
+      ): GameState => ({
+        players: playerNames.map((name, i) => ({
+          name,
+          streak: streaks[i],
+          history: [],
+        })),
+        baseScore: 5,
+        dealerIndex,
+        lastWinnerIndex: null,
+        currentStreakCount: 0,
+        roundHistory: [],
+        roundNum: 1,
+        streakCap,
+      });
+
+      // Cap at 90
+      // 0 wins: 10
+      const s0 = createMockStateWithCap(0, [0, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s0)).toBe(10);
+
+      // 1 win: 20
+      const s1 = createMockStateWithCap(0, [1, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s1)).toBe(20);
+
+      // 2 wins: 40
+      const s2 = createMockStateWithCap(0, [2, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s2)).toBe(40);
+
+      // 3 wins: 80
+      const s3 = createMockStateWithCap(0, [3, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s3)).toBe(80);
+
+      // 4 wins: capped at 90 (absolute cap, raw value is 160)
+      const s4 = createMockStateWithCap(0, [4, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s4)).toBe(90);
+
+      // 5 wins: capped at 90 (absolute cap, raw value is 320)
+      const s5 = createMockStateWithCap(0, [5, 0, 0, 0], 90);
+      expect(MahjongEngine.getPlayerBase(0, s5)).toBe(90);
+    });
+
+    it("should double indefinitely with no cap (null)", () => {
+      const createMockStateWithCap = (
+        dealerIndex: number,
+        streaks: number[],
+        streakCap: number | null,
+      ): GameState => ({
+        players: playerNames.map((name, i) => ({
+          name,
+          streak: streaks[i],
+          history: [],
+        })),
+        baseScore: 5,
+        dealerIndex,
+        lastWinnerIndex: null,
+        currentStreakCount: 0,
+        roundHistory: [],
+        roundNum: 1,
+        streakCap,
+      });
+
+      const s0 = createMockStateWithCap(0, [0, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s0)).toBe(10);
+
+      const s1 = createMockStateWithCap(0, [1, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s1)).toBe(20);
+
+      const s2 = createMockStateWithCap(0, [2, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s2)).toBe(40);
+
+      const s3 = createMockStateWithCap(0, [3, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s3)).toBe(80);
+
+      const s4 = createMockStateWithCap(0, [4, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s4)).toBe(160);
+
+      const s5 = createMockStateWithCap(0, [5, 0, 0, 0], null);
+      expect(MahjongEngine.getPlayerBase(0, s5)).toBe(320);
+    });
   });
 
   describe("calculateRoundChanges", () => {

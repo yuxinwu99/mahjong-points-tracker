@@ -6,12 +6,20 @@ export class MahjongEngine {
    */
   static getPlayerBase(playerIndex: number, gameState: GameState): number {
     const player = gameState.players[playerIndex];
-    // Base progression: 5 -> 10 -> 20 (Capped at 2)
     let base = gameState.baseScore;
 
-    // Dealer doubles the base (10 -> 20 -> 40)
+    // Dealer doubles the base
     if (playerIndex === gameState.dealerIndex) {
-      base = base * 2 * Math.pow(2, Math.min(2, player.streak));
+      const rawBase = base * 2 * Math.pow(2, player.streak);
+      const cap = gameState.streakCap;
+      if (cap === null) {
+        // No cap: score doubles indefinitely
+        base = rawBase;
+      } else {
+        // Capped: use custom cap, or default to 40 if undefined (legacy game)
+        const capValue = cap !== undefined ? cap : 40;
+        base = Math.min(capValue, rawBase);
+      }
     }
 
     return base;
@@ -92,8 +100,8 @@ export class MahjongEngine {
       let newStreak: number;
 
       if (isWinner && isDealer) {
-        // Dealer won: increment their streak (capped at 2)
-        newStreak = Math.min(2, player.streak + 1);
+        // Dealer won: increment their streak
+        newStreak = player.streak + 1;
       } else if (i === newDealerIndex && i !== gameState.dealerIndex) {
         // This player is the NEW dealer (dealer changed hands): start with streak 0
         newStreak = 0;
@@ -137,6 +145,7 @@ export class MahjongEngine {
     playerNames: string[],
     baseScore: number,
     initialDealerIndex: number,
+    streakCap: number | null = 40,
   ): GameState {
     return {
       players: playerNames.map((name) => ({ name, streak: 0, history: [] })),
@@ -146,6 +155,7 @@ export class MahjongEngine {
       currentStreakCount: 0,
       roundHistory: [],
       roundNum: 1,
+      streakCap,
     };
   }
 
@@ -167,6 +177,7 @@ export class MahjongEngine {
       playerNames,
       gameState.baseScore,
       initialDealerIndex,
+      gameState.streakCap,
     );
 
     for (const round of gameState.roundHistory) {
@@ -196,6 +207,7 @@ export class MahjongEngine {
       playerNames,
       gameState.baseScore,
       initialDealerIndex,
+      gameState.streakCap,
     );
 
     for (const round of gameState.roundHistory) {

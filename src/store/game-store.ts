@@ -31,11 +31,13 @@ export const startGame = (
   playerNames: string[],
   baseScore: number,
   initialDealerIndex: number,
+  streakCap?: number | null,
 ) => {
   const initialState = MahjongEngine.createInitialState(
     playerNames,
     baseScore,
     initialDealerIndex,
+    streakCap,
   );
   gameStore.setState(() => initialState);
 };

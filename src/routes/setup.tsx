@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import { Switch } from "../components/ui/switch";
 import { startGame } from "../store/game-store";
 
 export const Route = createFileRoute("/setup")({
@@ -20,13 +21,16 @@ function SetupPage() {
       players: ["", "", "", ""],
       baseScore: 5,
       initialDealer: 0,
+      enableStreakCap: true,
+      streakCap: 40,
     },
     onSubmit: async ({ value }) => {
       const names = value.players.map(
         (name, i) =>
           name.trim() || t("setup.player_placeholder", { index: i + 1 }),
       );
-      startGame(names, value.baseScore, value.initialDealer);
+      const cap = value.enableStreakCap ? value.streakCap : null;
+      startGame(names, value.baseScore, value.initialDealer, cap);
       navigate({ to: "/" });
     },
   });
@@ -145,6 +149,51 @@ function SetupPage() {
               />
             )}
           />
+        </div>
+
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/50">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5 pr-2">
+              <Label className="text-sm font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                {t("setup.limit_streak_cap")}
+              </Label>
+              <p className="text-xs text-slate-400 font-normal">
+                {t("setup.limit_streak_cap_help")}
+              </p>
+            </div>
+            <form.Field
+              name="enableStreakCap"
+              children={(field) => (
+                <Switch
+                  checked={field.state.value}
+                  onCheckedChange={field.handleChange}
+                />
+              )}
+            />
+          </div>
+
+          {form.state.values.enableStreakCap && (
+            <div className="animate-in fade-in slide-in-from-top-2 space-y-2 duration-300">
+              <Label
+                htmlFor="streakCap"
+                className="text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+              >
+                {t("setup.streak_cap_value")}
+              </Label>
+              <form.Field
+                name="streakCap"
+                children={(field) => (
+                  <Input
+                    id="streakCap"
+                    type="number"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                    className="h-12 border-slate-200 bg-white text-base font-bold text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  />
+                )}
+              />
+            </div>
+          )}
         </div>
 
         <Button

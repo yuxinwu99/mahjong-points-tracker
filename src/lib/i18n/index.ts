@@ -17,6 +17,9 @@ const resources = {
         initial_dealer: "Initial Dealer",
         player_placeholder: "Player {{index}}",
         order_disclaimer: "(Please arrange in order)",
+        limit_streak_cap: "Limit streak base point cap?",
+        limit_streak_cap_help: "Set a maximum base score for the dealer's winning streak.",
+        streak_cap_value: "Streak Base Point Cap",
       },
       game: {
         round: "ROUND",
@@ -77,6 +80,9 @@ const resources = {
         initial_dealer: "初始庄家",
         player_placeholder: "玩家 {{index}}",
         order_disclaimer: "(请按顺序排列)",
+        limit_streak_cap: "开启连庄底分上限？",
+        limit_streak_cap_help: "设置庄家连庄时底分的最高上限。",
+        streak_cap_value: "连庄底分上限",
       },
       game: {
         round: "回合",

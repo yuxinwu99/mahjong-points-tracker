@@ -94,4 +94,32 @@ describe("gameStore", () => {
     expect(state?.players[0].name).toBe("Alyson");
     expect(state?.players[1].name).toBe("Robert");
   });
+
+  it("should store a custom streakCap in game state", () => {
+    startGame(["Alice", "Bob", "Charlie", "David"], 5, 0, 90);
+    const state = gameStore.state;
+    expect(state?.streakCap).toBe(90);
+  });
+
+  it("should store null streakCap when no cap is set", () => {
+    startGame(["Alice", "Bob", "Charlie", "David"], 5, 0, null);
+    const state = gameStore.state;
+    expect(state?.streakCap).toBeNull();
+  });
+
+  it("should preserve streakCap through round history replay", () => {
+    // Start with a cap of 20 (so after 1 win, dealer is already at cap)
+    startGame(["Alice", "Bob", "Charlie", "David"], 5, 0, 20);
+
+    // Alice wins round 1 as dealer (streak becomes 1, base 20, capped at 20)
+    addRound(0, 1, [0, 0, 0, 0]);
+
+    // Alice wins round 2 as dealer again (streak becomes 2, raw base 40, capped at 20)
+    addRound(0, 1, [0, 0, 0, 0]);
+
+    const state = gameStore.state;
+    expect(state?.streakCap).toBe(20);
+    // Alice's streak should be 2 now (no longer hard-capped at 2)
+    expect(state?.players[0].streak).toBe(2);
+  });
 });

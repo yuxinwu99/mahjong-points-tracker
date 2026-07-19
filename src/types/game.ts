@@ -22,4 +22,5 @@ export interface GameState {
   currentStreakCount: number;
   roundHistory: RoundResult[];
   roundNum: number;
+  streakCap?: number | null;
 }
