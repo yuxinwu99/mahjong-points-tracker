@@ -11,8 +11,9 @@ import { Card, CardContent } from "../ui/card";
 import { EditRoundDialog } from "./edit-round-dialog";
 
 export function HistoryList() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const state = useSelector(gameStore, (s) => s);
+  const isZh = i18n.language?.startsWith("zh");
   const navigate = useNavigate();
   const [editingRound, setEditingRound] = useState<RoundResult | null>(null);
 
@@ -111,7 +112,17 @@ export function HistoryList() {
                     {round.scoreChanges.map((change, pIdx) => (
                       <div
                         key={pIdx}
-                        className={`text-center text-sm font-black ${change > 0 ? "text-emerald-500" : change < 0 ? "text-red-500" : "text-slate-300"}`}
+                        className={`text-center text-sm font-black ${
+                          change > 0
+                            ? isZh
+                              ? "text-red-500"
+                              : "text-emerald-500"
+                            : change < 0
+                              ? isZh
+                                ? "text-emerald-500"
+                                : "text-red-500"
+                              : "text-slate-300"
+                        }`}
                       >
                         {change > 0 ? "+" : ""}
                         {change}

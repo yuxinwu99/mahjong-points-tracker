@@ -10,8 +10,9 @@ import { PlayerDetailsModal } from "./player-details-modal";
 import { RoundModal } from "./round-modal";
 
 export function GameDashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const state = useSelector(gameStore, (s) => s);
+  const isZh = i18n.language?.startsWith("zh");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(null);
   const navigate = useNavigate();
@@ -99,9 +100,13 @@ export function GameDashboard() {
                 <span
                   className={`text-2xl font-black tabular-nums ${
                     points > 0
-                      ? "text-emerald-500"
-                      : points < 0
+                      ? isZh
                         ? "text-red-500"
+                        : "text-emerald-500"
+                      : points < 0
+                        ? isZh
+                          ? "text-emerald-500"
+                          : "text-red-500"
                         : "text-slate-900 dark:text-white"
                   }`}
                 >
