@@ -184,13 +184,16 @@ export function EditRoundDialog({
                         )}
                       </div>
                       <input
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         className="h-9 w-20 rounded-lg border-none bg-white p-2 text-right font-black text-slate-900 focus:ring-0 dark:bg-slate-900 dark:text-white"
                         value={field.state.value}
                         onFocus={(e) => e.target.select()}
-                        onChange={(e) =>
-                          field.handleChange(parseInt(e.target.value) || 0)
-                        }
+                        onChange={(e) => {
+                          const cleaned = e.target.value.replace(/[^0-9]/g, "");
+                          field.handleChange(parseInt(cleaned) || 0);
+                        }}
                       />
                     </div>
                   )}
